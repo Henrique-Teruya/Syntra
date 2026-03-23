@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Syntra">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/Syntra.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
