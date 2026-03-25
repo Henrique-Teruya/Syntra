@@ -89,7 +89,7 @@ public class TelaGarantia extends javax.swing.JFrame {
         titulo.setHorizontalAlignment(SwingConstants.CENTER);
         titulo.setBorder(BorderFactory.createEtchedBorder());
 
-        tableModel = new DefaultTableModel(new String[]{"ID Garantia", "ID Cliente", "ID Material", "Meses", "Data Compra"}, 0) {
+        tableModel = new DefaultTableModel(new String[]{"ID Garantia", "ID Cliente", "ID Material", "ID Demanda", "Meses", "Data Compra"}, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
         jTable = new JTable(tableModel);
@@ -146,7 +146,7 @@ public class TelaGarantia extends javax.swing.JFrame {
         dao_garantia dao = new dao_garantia();
         List<Garantia> lista = dao.listarTodos();
         for (Garantia g : lista) {
-            tableModel.addRow(new Object[]{g.getId_garantia(), g.getId_cliente(), g.getId_material(), g.getMeses_garantia(), g.getData_compra()});
+            tableModel.addRow(new Object[]{g.getId_garantia(), g.getId_cliente(), g.getId_material(), g.getId_demanda(), g.getMeses_garantia(), g.getData_compra()});
         }
     }
 
@@ -159,14 +159,17 @@ public class TelaGarantia extends javax.swing.JFrame {
         if (idCliente == null) return;
         String idMaterial = JOptionPane.showInputDialog(this, "ID Material:", tableModel.getValueAt(row, 2));
         if (idMaterial == null) return;
-        String meses = JOptionPane.showInputDialog(this, "Meses Garantia:", tableModel.getValueAt(row, 3));
+        String idDemanda = JOptionPane.showInputDialog(this, "ID Demanda:", tableModel.getValueAt(row, 3));
+        if (idDemanda == null) return;
+        String meses = JOptionPane.showInputDialog(this, "Meses Garantia:", tableModel.getValueAt(row, 4));
         if (meses == null) return;
-        String data = JOptionPane.showInputDialog(this, "Data Compra:", tableModel.getValueAt(row, 4));
+        String data = JOptionPane.showInputDialog(this, "Data Compra:", tableModel.getValueAt(row, 5));
 
         Garantia g = new Garantia();
         g.setId_garantia(id);
         g.setId_cliente(Integer.parseInt(idCliente));
         g.setId_material(Integer.parseInt(idMaterial));
+        g.setId_demanda(Integer.parseInt(idDemanda));
         g.setMeses_garantia(Integer.parseInt(meses));
         g.setData_compra(data != null ? data : "");
 

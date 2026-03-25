@@ -40,6 +40,7 @@ public class dao_garantia {
     // LISTAR TODOS
     public List<Garantia> listarTodos() {
         List<Garantia> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM garantia";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);

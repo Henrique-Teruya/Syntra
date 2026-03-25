@@ -79,6 +79,7 @@ public class dao_demandas {
     // LISTAR TODOS
     public List<Demandas> listarTodos() {
         List<Demandas> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM demandas";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
