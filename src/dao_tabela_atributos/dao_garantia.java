@@ -20,13 +20,14 @@ public class dao_garantia {
 
     // INSERIR GARANTIA
     public boolean inserirDados(Garantia g) {
-        String sql = "INSERT INTO garantia (id_cliente, id_material, meses_garantia, data_compra) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO garantia (id_cliente, id_material, id_demanda, meses_garantia, data_compra) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
             stmt.setInt(1, g.getId_cliente());
             stmt.setInt(2, g.getId_material());
-            stmt.setInt(3, g.getMeses_garantia());
-            stmt.setString(4, g.getData_compra());
+            if (g.getId_demanda() > 0) stmt.setInt(3, g.getId_demanda()); else stmt.setNull(3, java.sql.Types.INTEGER);
+            stmt.setInt(4, g.getMeses_garantia());
+            stmt.setString(5, g.getData_compra());
             stmt.execute();
             stmt.close();
             return true;
@@ -48,6 +49,7 @@ public class dao_garantia {
                 g.setId_garantia(rs.getInt("id_garantia"));
                 g.setId_cliente(rs.getInt("id_cliente"));
                 g.setId_material(rs.getInt("id_material"));
+                g.setId_demanda(rs.getInt("id_demanda"));
                 g.setMeses_garantia(rs.getInt("meses_garantia"));
                 g.setData_compra(rs.getString("data_compra"));
                 lista.add(g);
@@ -72,6 +74,7 @@ public class dao_garantia {
                 g.setId_garantia(rs.getInt("id_garantia"));
                 g.setId_cliente(rs.getInt("id_cliente"));
                 g.setId_material(rs.getInt("id_material"));
+                g.setId_demanda(rs.getInt("id_demanda"));
                 g.setMeses_garantia(rs.getInt("meses_garantia"));
                 g.setData_compra(rs.getString("data_compra"));
                 return g;
@@ -84,14 +87,15 @@ public class dao_garantia {
 
     // ATUALIZAR GARANTIA
     public boolean atualizar(Garantia g) {
-        String sql = "UPDATE garantia SET id_cliente=?, id_material=?, meses_garantia=?, data_compra=? WHERE id_garantia=?";
+        String sql = "UPDATE garantia SET id_cliente=?, id_material=?, id_demanda=?, meses_garantia=?, data_compra=? WHERE id_garantia=?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
             stmt.setInt(1, g.getId_cliente());
             stmt.setInt(2, g.getId_material());
-            stmt.setInt(3, g.getMeses_garantia());
-            stmt.setString(4, g.getData_compra());
-            stmt.setInt(5, g.getId_garantia());
+            if (g.getId_demanda() > 0) stmt.setInt(3, g.getId_demanda()); else stmt.setNull(3, java.sql.Types.INTEGER);
+            stmt.setInt(4, g.getMeses_garantia());
+            stmt.setString(5, g.getData_compra());
+            stmt.setInt(6, g.getId_garantia());
             stmt.executeUpdate();
             stmt.close();
             return true;
