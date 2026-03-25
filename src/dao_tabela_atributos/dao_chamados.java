@@ -39,6 +39,7 @@ public class dao_chamados {
     // LISTAR TODOS
     public List<Chamados> listarTodos() {
         List<Chamados> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM chamados";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);

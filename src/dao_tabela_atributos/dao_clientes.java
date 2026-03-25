@@ -49,6 +49,7 @@ public class dao_clientes {
     // LISTAR TODOS
     public List<Cliente> listarTodos() {
         List<Cliente> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM cliente";
 
         try {

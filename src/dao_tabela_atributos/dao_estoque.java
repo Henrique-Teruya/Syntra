@@ -39,6 +39,7 @@ public class dao_estoque {
     // LISTAR TODOS
     public List<Estoque> listarTodos() {
         List<Estoque> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM estoque";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);

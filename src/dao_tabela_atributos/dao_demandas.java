@@ -18,7 +18,7 @@ public class dao_demandas {
     // INSERIR DEMANDA + MATERIAIS
     public boolean inserirDadosComMateriais(Demandas demanda, List<int[]> itens) {
         String sqlDemanda = "INSERT INTO demandas (id_cliente, descricao, data_solicitacao, entregueSouN) VALUES (?, ?, ?, ?)";
-        String sqlItens = "INSERT INTO demandas_materiais (id_demanda, id_material, quantidade) VALUES (?, ?, ?)";
+        String sqlItens = "INSERT INTO demandas_materiais (id_demanda, id_material, quantidade_usada) VALUES (?, ?, ?)";
 
         try {
             conectar.setAutoCommit(false);
@@ -79,6 +79,7 @@ public class dao_demandas {
     // LISTAR TODOS
     public List<Demandas> listarTodos() {
         List<Demandas> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM demandas";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
