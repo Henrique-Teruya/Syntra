@@ -20,13 +20,12 @@ public class dao_chamados {
 
     // INSERIR CHAMADO
     public boolean inserirDados(Chamados chamado) {
-        String sql = "INSERT INTO chamados (id_cliente, descricao, data_abertura, status) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO chamados (id_cliente, descricao, data_chamado) VALUES (?, ?, ?)";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
             stmt.setInt(1, chamado.getId_cliente());
             stmt.setString(2, chamado.getDescricao());
             stmt.setString(3, chamado.getData_abertura());
-            stmt.setString(4, chamado.getStatus());
             stmt.execute();
             stmt.close();
             return true;
@@ -48,8 +47,7 @@ public class dao_chamados {
                 ch.setId_chamado(rs.getInt("id_chamado"));
                 ch.setId_cliente(rs.getInt("id_cliente"));
                 ch.setDescricao(rs.getString("descricao"));
-                ch.setData_abertura(rs.getString("data_abertura"));
-                ch.setStatus(rs.getString("status"));
+                ch.setData_abertura(rs.getString("data_chamado"));
                 lista.add(ch);
             }
             rs.close();
@@ -72,8 +70,7 @@ public class dao_chamados {
                 ch.setId_chamado(rs.getInt("id_chamado"));
                 ch.setId_cliente(rs.getInt("id_cliente"));
                 ch.setDescricao(rs.getString("descricao"));
-                ch.setData_abertura(rs.getString("data_abertura"));
-                ch.setStatus(rs.getString("status"));
+                ch.setData_abertura(rs.getString("data_chamado"));
                 return ch;
             }
         } catch (SQLException e) {
@@ -84,14 +81,13 @@ public class dao_chamados {
 
     // ATUALIZAR CHAMADO
     public boolean atualizar(Chamados ch) {
-        String sql = "UPDATE chamados SET id_cliente=?, descricao=?, data_abertura=?, status=? WHERE id_chamado=?";
+        String sql = "UPDATE chamados SET id_cliente=?, descricao=?, data_chamado=? WHERE id_chamado=?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
             stmt.setInt(1, ch.getId_cliente());
             stmt.setString(2, ch.getDescricao());
             stmt.setString(3, ch.getData_abertura());
-            stmt.setString(4, ch.getStatus());
-            stmt.setInt(5, ch.getId_chamado());
+            stmt.setInt(4, ch.getId_chamado());
             stmt.executeUpdate();
             stmt.close();
             return true;

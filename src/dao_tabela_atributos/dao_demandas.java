@@ -18,7 +18,7 @@ public class dao_demandas {
     // INSERIR DEMANDA + MATERIAIS
     public boolean inserirDadosComMateriais(Demandas demanda, List<int[]> itens) {
         String sqlDemanda = "INSERT INTO demandas (id_cliente, descricao, data_solicitacao, entregueSouN) VALUES (?, ?, ?, ?)";
-        String sqlItens = "INSERT INTO demandas_materiais (id_demanda, id_material, quantidade_usada) VALUES (?, ?, ?)";
+        String sqlItens = "INSERT INTO demandas_materiais (id_demanda, id_material, quantidade) VALUES (?, ?, ?)";
 
         try {
             conectar.setAutoCommit(false);
