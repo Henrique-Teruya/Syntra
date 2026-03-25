@@ -237,8 +237,8 @@ public class TelaClientes extends javax.swing.JFrame {
             c.setTipo(tipo);
             c.setNome(nome);
             c.setGrupo(grupo);
-            if (tipo.equals("PESSOA")) { c.setCPF(documento); c.setCNPJ(null); }
-            else { c.setCNPJ(documento); c.setCPF(null); }
+            if (tipo.equals("PESSOA")) { c.setCPF(documento); c.setCNPJ(""); }
+            else { c.setCNPJ(documento); c.setCPF(""); }
             c.setCEP(cep);
             c.setBairro(bairro);
             c.setRua(rua);
@@ -285,11 +285,17 @@ public class TelaClientes extends javax.swing.JFrame {
             JOptionPane.QUESTION_MESSAGE, null, new String[]{"EMPRESA", "PESSOA"}, tableModel.getValueAt(row, 2));
         if (tipo == null) return;
         String cpf = JOptionPane.showInputDialog(this, "CPF:", tableModel.getValueAt(row, 3));
+        if (cpf == null) return;
         String cnpj = JOptionPane.showInputDialog(this, "CNPJ:", tableModel.getValueAt(row, 4));
+        if (cnpj == null) return;
         String grupo = JOptionPane.showInputDialog(this, "Grupo:", tableModel.getValueAt(row, 5));
+        if (grupo == null) return;
         String cep = JOptionPane.showInputDialog(this, "CEP:", tableModel.getValueAt(row, 6));
+        if (cep == null) return;
         String bairro = JOptionPane.showInputDialog(this, "Bairro:", tableModel.getValueAt(row, 7));
+        if (bairro == null) return;
         String rua = JOptionPane.showInputDialog(this, "Rua:", tableModel.getValueAt(row, 8));
+        if (rua == null) return;
 
         Cliente c = new Cliente();
         c.setId_cliente(id);
