@@ -20,6 +20,7 @@ public class dao_chamados {
 
     // INSERIR CHAMADO
     public boolean inserirDados(Chamados chamado) {
+        if (conectar == null) return false;
         String sql = "INSERT INTO chamados (id_cliente, descricao, data_chamado) VALUES (?, ?, ?)";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -38,6 +39,7 @@ public class dao_chamados {
     // LISTAR TODOS
     public List<Chamados> listarTodos() {
         List<Chamados> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM chamados";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -60,6 +62,7 @@ public class dao_chamados {
 
     // BUSCAR CHAMADO POR ID
     public Chamados getChamado(int id) {
+        if (conectar == null) return null;
         String sql = "SELECT * FROM chamados WHERE id_chamado = ?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -81,6 +84,7 @@ public class dao_chamados {
 
     // ATUALIZAR CHAMADO
     public boolean atualizar(Chamados ch) {
+        if (conectar == null) return false;
         String sql = "UPDATE chamados SET id_cliente=?, descricao=?, data_chamado=? WHERE id_chamado=?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -99,6 +103,7 @@ public class dao_chamados {
 
     // DELETAR CHAMADO
     public boolean deletar(int id) {
+        if (conectar == null) return false;
         String sql = "DELETE FROM chamados WHERE id_chamado = ?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);

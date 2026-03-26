@@ -237,8 +237,8 @@ public class TelaClientes extends javax.swing.JFrame {
             c.setTipo(tipo);
             c.setNome(nome);
             c.setGrupo(grupo);
-            if (tipo.equals("PESSOA")) { c.setCPF(documento); c.setCNPJ(null); }
-            else { c.setCNPJ(documento); c.setCPF(null); }
+            if (tipo.equals("PESSOA")) { c.setCPF(documento); c.setCNPJ(""); }
+            else { c.setCNPJ(documento); c.setCPF(""); }
             c.setCEP(cep);
             c.setBairro(bairro);
             c.setRua(rua);
