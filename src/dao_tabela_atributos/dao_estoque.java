@@ -45,12 +45,20 @@ public class dao_estoque {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Estoque e = new Estoque();
+                String tipo = rs.getString("tipo_mov");
                 e.setId_material(rs.getInt("id_material"));
-                e.setDescricao(rs.getString("descricao"));
+                e.setTipo_mov(tipo);
                 e.setQuantidade(rs.getInt("quantidade"));
-                e.setId_demanda(rs.getInt("id_demanda"));
-                e.setTipo_mov(rs.getString("tipo_mov"));
                 e.setData_mov(rs.getString("data_mov"));
+
+                if ("ENTRADA".equalsIgnoreCase(tipo)) {
+                    e.setDescricao(rs.getString("descricao"));
+                    e.setId_demanda(0);
+                } else {
+                    e.setDescricao("");
+                    e.setId_demanda(rs.getInt("id_demanda"));
+                }
+
                 lista.add(e);
             }
             rs.close();

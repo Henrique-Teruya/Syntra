@@ -161,7 +161,7 @@ public class TelaClientes extends javax.swing.JFrame {
         jLabelTitulo.setBorder(BorderFactory.createEtchedBorder());
 
         tableModel = new DefaultTableModel(
-            new String[]{"ID", "Nome", "Tipo", "CPF", "CNPJ", "Grupo", "CEP", "Bairro", "Rua"}, 0) {
+            new String[]{"ID", "Nome", "Tipo", "CPF/CNPJ", "Grupo", "CEP", "Bairro", "Rua"}, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
         jTable = new JTable(tableModel);
@@ -267,8 +267,9 @@ public class TelaClientes extends javax.swing.JFrame {
         dao_clientes dao = new dao_clientes();
         List<Cliente> lista = dao.listarTodos();
         for (Cliente c : lista) {
+            String documento = "PESSOA".equals(c.getTipo()) ? c.getCPF() : c.getCNPJ();
             tableModel.addRow(new Object[]{
-                c.getId_cliente(), c.getNome(), c.getTipo(), c.getCPF(), c.getCNPJ(),
+                c.getId_cliente(), c.getNome(), c.getTipo(), documento,
                 c.getGrupo(), c.getCEP(), c.getBairro(), c.getRua()
             });
         }
@@ -279,30 +280,51 @@ public class TelaClientes extends javax.swing.JFrame {
         if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione um cliente."); return; }
 
         int id = (int) tableModel.getValueAt(row, 0);
-        String nome = JOptionPane.showInputDialog(this, "Nome:", tableModel.getValueAt(row, 1));
+
+        dao_clientes dao = new dao_clientes();
+        Cliente clienteOriginal = dao.getCliente(id);
+        if (clienteOriginal == null) {
+            JOptionPane.showMessageDialog(this, "Erro ao recuperar dados do cliente.");
+            return;
+        }
+
+        String nome = JOptionPane.showInputDialog(this, "Nome:", clienteOriginal.getNome());
         if (nome == null) return;
+
         String tipo = (String) JOptionPane.showInputDialog(this, "Tipo:", "Editar Tipo",
-            JOptionPane.QUESTION_MESSAGE, null, new String[]{"EMPRESA", "PESSOA"}, tableModel.getValueAt(row, 2));
+            JOptionPane.QUESTION_MESSAGE, null, new String[]{"EMPRESA", "PESSOA"}, clienteOriginal.getTipo());
         if (tipo == null) return;
-        String cpf = JOptionPane.showInputDialog(this, "CPF:", tableModel.getValueAt(row, 3));
-        String cnpj = JOptionPane.showInputDialog(this, "CNPJ:", tableModel.getValueAt(row, 4));
-        String grupo = JOptionPane.showInputDialog(this, "Grupo:", tableModel.getValueAt(row, 5));
-        String cep = JOptionPane.showInputDialog(this, "CEP:", tableModel.getValueAt(row, 6));
-        String bairro = JOptionPane.showInputDialog(this, "Bairro:", tableModel.getValueAt(row, 7));
-        String rua = JOptionPane.showInputDialog(this, "Rua:", tableModel.getValueAt(row, 8));
+
+        String docPrompt = "PESSOA".equals(tipo) ? "CPF:" : "CNPJ:";
+        String docOriginal = "PESSOA".equals(tipo) ? clienteOriginal.getCPF() : clienteOriginal.getCNPJ();
+        String documento = JOptionPane.showInputDialog(this, docPrompt, docOriginal);
+        if (documento == null) return;
+
+        String grupo = JOptionPane.showInputDialog(this, "Grupo:", clienteOriginal.getGrupo());
+        if (grupo == null) return;
+        String cep = JOptionPane.showInputDialog(this, "CEP:", clienteOriginal.getCEP());
+        if (cep == null) return;
+        String bairro = JOptionPane.showInputDialog(this, "Bairro:", clienteOriginal.getBairro());
+        if (bairro == null) return;
+        String rua = JOptionPane.showInputDialog(this, "Rua:", clienteOriginal.getRua());
+        if (rua == null) return;
 
         Cliente c = new Cliente();
         c.setId_cliente(id);
         c.setNome(nome);
         c.setTipo(tipo);
-        c.setCPF(cpf);
-        c.setCNPJ(cnpj);
-        c.setGrupo(grupo != null ? grupo : "");
-        c.setCEP(cep != null ? cep : "");
-        c.setBairro(bairro != null ? bairro : "");
-        c.setRua(rua != null ? rua : "");
+        if ("PESSOA".equals(tipo)) {
+            c.setCPF(documento);
+            c.setCNPJ("");
+        } else {
+            c.setCNPJ(documento);
+            c.setCPF("");
+        }
+        c.setGrupo(grupo);
+        c.setCEP(cep);
+        c.setBairro(bairro);
+        c.setRua(rua);
 
-        dao_clientes dao = new dao_clientes();
         if (dao.atualizar(c)) {
             JOptionPane.showMessageDialog(this, "Cliente atualizado!");
             carregarDados();

@@ -24,16 +24,18 @@ public class dao_clientes {
         if (cliente == null) { System.out.println("Erro: objeto cliente está nulo."); return false; }
         if (cliente.getNome() == null || cliente.getNome().trim().isEmpty()) { System.out.println("Erro: nome vazio."); return false; }
 
-        String sql = "INSERT INTO cliente (nome, grupo, CNPJ, CEP, Bairro, Rua) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cliente (nome, grupo, tipo, CPF, CNPJ, CEP, Bairro, Rua) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
             stmt.setString(1, cliente.getNome());
             stmt.setString(2, cliente.getGrupo());
-            stmt.setString(3, cliente.getCNPJ());
-            stmt.setString(4, cliente.getCEP());
-            stmt.setString(5, cliente.getBairro());
-            stmt.setString(6, cliente.getRua());
+            stmt.setString(3, cliente.getTipo());
+            stmt.setString(4, cliente.getCPF() != null ? cliente.getCPF() : "");
+            stmt.setString(5, cliente.getCNPJ() != null ? cliente.getCNPJ() : "");
+            stmt.setString(6, cliente.getCEP());
+            stmt.setString(7, cliente.getBairro());
+            stmt.setString(8, cliente.getRua());
             stmt.execute();
             stmt.close();
             System.out.println("Cliente inserido com sucesso!");
@@ -58,6 +60,8 @@ public class dao_clientes {
                 c.setId_cliente(rs.getInt("id_cliente"));
                 c.setNome(rs.getString("nome"));
                 c.setGrupo(rs.getString("grupo"));
+                c.setTipo(rs.getString("tipo"));
+                c.setCPF(rs.getString("CPF"));
                 c.setCNPJ(rs.getString("CNPJ"));
                 c.setCEP(rs.getString("CEP"));
                 c.setBairro(rs.getString("Bairro"));
@@ -88,6 +92,8 @@ public class dao_clientes {
                 cliente.setId_cliente(rs.getInt("id_cliente"));
                 cliente.setNome(rs.getString("nome"));
                 cliente.setGrupo(rs.getString("grupo"));
+                cliente.setTipo(rs.getString("tipo"));
+                cliente.setCPF(rs.getString("CPF"));
                 cliente.setCNPJ(rs.getString("CNPJ"));
                 cliente.setCEP(rs.getString("CEP"));
                 cliente.setBairro(rs.getString("Bairro"));
@@ -102,16 +108,18 @@ public class dao_clientes {
 
     // ATUALIZAR CLIENTE
     public boolean atualizar(Cliente c) {
-        String sql = "UPDATE cliente SET nome=?, grupo=?, CNPJ=?, CEP=?, Bairro=?, Rua=? WHERE id_cliente=?";
+        String sql = "UPDATE cliente SET nome=?, grupo=?, tipo=?, CPF=?, CNPJ=?, CEP=?, Bairro=?, Rua=? WHERE id_cliente=?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
             stmt.setString(1, c.getNome());
             stmt.setString(2, c.getGrupo());
-            stmt.setString(3, c.getCNPJ());
-            stmt.setString(4, c.getCEP());
-            stmt.setString(5, c.getBairro());
-            stmt.setString(6, c.getRua());
-            stmt.setInt(7, c.getId_cliente());
+            stmt.setString(3, c.getTipo());
+            stmt.setString(4, c.getCPF() != null ? c.getCPF() : "");
+            stmt.setString(5, c.getCNPJ() != null ? c.getCNPJ() : "");
+            stmt.setString(6, c.getCEP());
+            stmt.setString(7, c.getBairro());
+            stmt.setString(8, c.getRua());
+            stmt.setInt(9, c.getId_cliente());
             stmt.executeUpdate();
             stmt.close();
             return true;
