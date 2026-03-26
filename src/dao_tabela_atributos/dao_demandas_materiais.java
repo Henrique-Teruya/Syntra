@@ -15,7 +15,8 @@ public class dao_demandas_materiais {
     }
 
     public boolean inserirItem(DemandasMateriais dm) {
-        String sql = "INSERT INTO demandas_materiais (id_demanda, id_material, quantidade) VALUES (?, ?, ?)";
+        if (conectar == null) return false;
+        String sql = "INSERT INTO demandas_materiais (id_demanda, id_material, quantidade_usada) VALUES (?, ?, ?)";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
             stmt.setInt(1, dm.getId_demanda());

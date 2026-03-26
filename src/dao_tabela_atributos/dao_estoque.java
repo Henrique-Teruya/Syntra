@@ -19,6 +19,7 @@ public class dao_estoque {
 
     // INSERIR MOVIMENTO
     public boolean inserirDados(Estoque e) {
+        if (conectar == null) return false;
         String sql = "INSERT INTO estoque (descricao, quantidade, id_demanda, tipo_mov, data_mov) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -39,6 +40,7 @@ public class dao_estoque {
     // LISTAR TODOS
     public List<Estoque> listarTodos() {
         List<Estoque> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM estoque";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -71,6 +73,7 @@ public class dao_estoque {
 
     // ATUALIZAR
     public boolean atualizar(Estoque e) {
+        if (conectar == null) return false;
         String sql = "UPDATE estoque SET descricao=?, quantidade=?, id_demanda=?, tipo_mov=?, data_mov=? WHERE id_material=?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -91,6 +94,7 @@ public class dao_estoque {
 
     // DELETAR
     public boolean deletar(int id) {
+        if (conectar == null) return false;
         String sql = "DELETE FROM estoque WHERE id_material = ?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);

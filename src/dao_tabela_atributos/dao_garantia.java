@@ -20,6 +20,7 @@ public class dao_garantia {
 
     // INSERIR GARANTIA
     public boolean inserirDados(Garantia g) {
+        if (conectar == null) return false;
         String sql = "INSERT INTO garantia (id_cliente, id_material, id_demanda, meses_garantia, data_compra) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -40,6 +41,7 @@ public class dao_garantia {
     // LISTAR TODOS
     public List<Garantia> listarTodos() {
         List<Garantia> lista = new ArrayList<>();
+        if (conectar == null) return lista;
         String sql = "SELECT * FROM garantia";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -64,6 +66,7 @@ public class dao_garantia {
 
     // BUSCAR GARANTIA POR ID
     public Garantia getGarantia(int id) {
+        if (conectar == null) return null;
         String sql = "SELECT * FROM garantia WHERE id_garantia = ?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -87,6 +90,7 @@ public class dao_garantia {
 
     // ATUALIZAR GARANTIA
     public boolean atualizar(Garantia g) {
+        if (conectar == null) return false;
         String sql = "UPDATE garantia SET id_cliente=?, id_material=?, id_demanda=?, meses_garantia=?, data_compra=? WHERE id_garantia=?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
@@ -107,6 +111,7 @@ public class dao_garantia {
 
     // DELETAR GARANTIA
     public boolean deletar(int id) {
+        if (conectar == null) return false;
         String sql = "DELETE FROM garantia WHERE id_garantia = ?";
         try {
             PreparedStatement stmt = conectar.prepareStatement(sql);
