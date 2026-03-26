@@ -91,7 +91,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         titulo.setHorizontalAlignment(SwingConstants.CENTER);
         titulo.setBorder(BorderFactory.createEtchedBorder());
 
-        tableModel = new DefaultTableModel(new String[]{"ID Material", "Descrição", "Quantidade", "ID Demanda", "Tipo Mov", "Data Mov"}, 0) {
+        tableModel = new DefaultTableModel(new String[]{"ID Material", "Referência", "Quantidade", "Tipo Mov", "Data Mov"}, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
         jTable = new JTable(tableModel);
@@ -156,7 +156,8 @@ public class TelaEstoque extends javax.swing.JFrame {
         dao_estoque dao = new dao_estoque();
         List<Estoque> lista = dao.listarTodos();
         for (Estoque e : lista) {
-            tableModel.addRow(new Object[]{e.getId_material(), e.getDescricao(), e.getQuantidade(), e.getId_demanda(), e.getTipo_mov(), e.getData_mov()});
+            String referencia = "ENTRADA".equalsIgnoreCase(e.getTipo_mov()) ? e.getDescricao() : "Demanda #" + e.getId_demanda();
+            tableModel.addRow(new Object[]{e.getId_material(), referencia, e.getQuantidade(), e.getTipo_mov(), e.getData_mov()});
         }
     }
 
@@ -165,25 +166,58 @@ public class TelaEstoque extends javax.swing.JFrame {
         if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione um registro."); return; }
         int id = (int) tableModel.getValueAt(row, 0);
 
-        String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 1));
-        if (descricao == null) return;
-        String quantidade = JOptionPane.showInputDialog(this, "Quantidade:", tableModel.getValueAt(row, 2));
-        if (quantidade == null) return;
-        String idDemanda = JOptionPane.showInputDialog(this, "ID Demanda (0 se vazio):", tableModel.getValueAt(row, 3));
+        dao_estoque dao = new dao_estoque();
+        // Since dao_estoque doesn't have a getMaterial(id) method, I'll need to find it from the list or add it.
+        // Actually, looking at dao_estoque.java, it only has inserirDados, listarTodos, atualizar, and deletar.
+        // I will find the object in the list for simplicity, or just use values from table if possible,
+        // but table is now simplified.
+
+        List<Estoque> lista = dao.listarTodos();
+        Estoque original = null;
+        for(Estoque item : lista) {
+            if(item.getId_material() == id) {
+                original = item;
+                break;
+            }
+        }
+
+        if (original == null) {
+            JOptionPane.showMessageDialog(this, "Erro ao recuperar dados.");
+            return;
+        }
+
         String tipoMov = (String) JOptionPane.showInputDialog(this, "Tipo:", "Editar",
-            JOptionPane.QUESTION_MESSAGE, null, new String[]{"ENTRADA", "SAIDA"}, tableModel.getValueAt(row, 4));
+            JOptionPane.QUESTION_MESSAGE, null, new String[]{"ENTRADA", "SAIDA"}, original.getTipo_mov());
         if (tipoMov == null) return;
-        String dataMov = JOptionPane.showInputDialog(this, "Data:", tableModel.getValueAt(row, 5));
+
+        String descricao = original.getDescricao();
+        if ("ENTRADA".equals(tipoMov)) {
+            descricao = JOptionPane.showInputDialog(this, "Descrição:", original.getDescricao());
+            if (descricao == null) return;
+        }
+
+        String quantidadeStr = JOptionPane.showInputDialog(this, "Quantidade:", original.getQuantidade());
+        if (quantidadeStr == null) return;
+        int quantidade = Integer.parseInt(quantidadeStr);
+
+        int idDemanda = original.getId_demanda();
+        if ("SAIDA".equals(tipoMov)) {
+            String idDemandaStr = JOptionPane.showInputDialog(this, "ID Demanda:", original.getId_demanda());
+            if (idDemandaStr == null) return;
+            idDemanda = Integer.parseInt(idDemandaStr);
+        }
+
+        String dataMov = JOptionPane.showInputDialog(this, "Data:", original.getData_mov());
+        if (dataMov == null) return;
 
         Estoque e = new Estoque();
         e.setId_material(id);
-        e.setDescricao(descricao);
-        e.setQuantidade(Integer.parseInt(quantidade));
-        e.setId_demanda(idDemanda != null && !idDemanda.isEmpty() ? Integer.parseInt(idDemanda) : 0);
         e.setTipo_mov(tipoMov);
-        e.setData_mov(dataMov != null ? dataMov : "");
+        e.setDescricao("ENTRADA".equals(tipoMov) ? descricao : "");
+        e.setQuantidade(quantidade);
+        e.setId_demanda("SAIDA".equals(tipoMov) ? idDemanda : 0);
+        e.setData_mov(dataMov);
 
-        dao_estoque dao = new dao_estoque();
         if (dao.atualizar(e)) { JOptionPane.showMessageDialog(this, "Atualizado!"); carregarDados(); }
         else { JOptionPane.showMessageDialog(this, "Erro ao atualizar!"); }
     }
