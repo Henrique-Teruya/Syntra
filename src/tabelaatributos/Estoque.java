@@ -2,12 +2,16 @@ package tabelaatributos;
 
 public class Estoque {
 
+    private int id_mov;
     private int id_material;
     private String descricao;   // descrição do material (quando é entrada)
     private int quantidade;
     private int id_demanda;     // opcional: referência à demanda (saída)
     private String tipo_mov;    // "ENTRADA" ou "SAIDA"
     private String data_mov;    // data do movimento (AAAA-MM-DD)
+
+    public int getId_mov() { return id_mov; }
+    public void setId_mov(int id_mov) { this.id_mov = id_mov; }
 
     public int getId_material() { return id_material; }
     public void setId_material(int id_material) { this.id_material = id_material; }
