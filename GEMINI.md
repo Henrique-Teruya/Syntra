@@ -76,6 +76,8 @@ Funções:
 - Exibição de mensagens
 - Navegação entre funcionalidades
 
+> A classe principal (ponto de entrada) é `Principal.Principal`, que inicia o aplicativo, testa a conexão com o banco de dados e abre o `MenuInicial`.
+
 ---
 
 ## 🗃 Estrutura do Banco de Dados

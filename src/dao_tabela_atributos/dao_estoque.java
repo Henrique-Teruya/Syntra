@@ -64,6 +64,32 @@ public class dao_estoque {
         return lista;
     }
 
+    // BUSCAR POR ID
+    public Estoque getEstoque(int id_mov) {
+        if (conectar == null) return null;
+        String sql = "SELECT * FROM estoque_mov WHERE id_mov = ?";
+        try {
+            PreparedStatement stmt = conectar.prepareStatement(sql);
+            stmt.setInt(1, id_mov);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Estoque e = new Estoque();
+                e.setId_mov(rs.getInt("id_mov"));
+                e.setId_material(rs.getInt("id_material"));
+                e.setDescricao(rs.getString("descricao"));
+                e.setQuantidade(rs.getInt("quantidade"));
+                e.setTipo_mov(rs.getString("tipo_mov"));
+                e.setData_mov(rs.getString("data_mov"));
+                return e;
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            System.out.println("Erro ao buscar estoque: " + ex.getMessage());
+        }
+        return null;
+    }
+
     // ATUALIZAR
     public boolean atualizar(Estoque e) {
         if (conectar == null) return false;

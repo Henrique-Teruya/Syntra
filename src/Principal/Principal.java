@@ -21,7 +21,3 @@ public class Principal {
     new telas.MenuInicial().setVisible(true);
      }
     } 
-
-    
-    
-

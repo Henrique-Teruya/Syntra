@@ -170,14 +170,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         int idMov = (int) tableModel.getValueAt(row, 0);
 
         dao_estoque dao = new dao_estoque();
-        List<Estoque> lista = dao.listarTodos();
-        Estoque original = null;
-        for(Estoque item : lista) {
-            if(item.getId_mov() == idMov) {
-                original = item;
-                break;
-            }
-        }
+        Estoque original = dao.getEstoque(idMov);
 
         if (original == null) {
             JOptionPane.showMessageDialog(this, "Erro ao recuperar dados.");
