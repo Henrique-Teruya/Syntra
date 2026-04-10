@@ -16,6 +16,35 @@ public class TelaGarantia extends javax.swing.JFrame {
         initComponents();
     }
 
+    private void styleButton(JButton btn) {
+        btn.setBackground(new java.awt.Color(0, 113, 227));
+        btn.setForeground(java.awt.Color.WHITE);
+        btn.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.PLAIN, 14));
+        btn.setFocusPainted(false);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }
+
+    private void styleTitle(JLabel label) {
+        label.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 24));
+        label.setForeground(new java.awt.Color(29, 29, 31));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+    private void addFormRow(JPanel painel, JLabel label, JComponent field, java.awt.GridBagConstraints gbc, int row) {
+        gbc.gridx = 0; gbc.gridy = row;
+        gbc.anchor = java.awt.GridBagConstraints.EAST;
+        label.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
+        label.setForeground(new java.awt.Color(29, 29, 31));
+        painel.add(label, gbc);
+
+        gbc.gridx = 1; gbc.gridy = row;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        field.setPreferredSize(new java.awt.Dimension(250, 35));
+        painel.add(field, gbc);
+    }
+
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Garantias");
@@ -24,7 +53,10 @@ public class TelaGarantia extends javax.swing.JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Inserir", criarPainelInserir());
         tabbedPane.addTab("Visualizar", criarPainelVisualizar());
-        tabbedPane.addChangeListener(evt -> { if (tabbedPane.getSelectedIndex() == 1) carregarDados(); });
+        tabbedPane.addChangeListener(evt -> {
+            if (tabbedPane.getSelectedIndex() == 1)
+                carregarDados();
+        });
 
         getContentPane().add(tabbedPane);
         setSize(620, 420);
@@ -32,10 +64,12 @@ public class TelaGarantia extends javax.swing.JFrame {
     }
 
     private JPanel criarPainelInserir() {
-        JPanel painel = new JPanel();
-        JLabel titulo = new JLabel("CADASTRAR GARANTIA");
-        titulo.setHorizontalAlignment(SwingConstants.CENTER);
-        titulo.setBorder(BorderFactory.createEtchedBorder());
+        JPanel painel = new JPanel(new java.awt.GridBagLayout());
+        painel.setBackground(new java.awt.Color(245, 245, 247));
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        JLabel titulo = new JLabel("Cadastrar Garantia");
+        styleTitle(titulo);
 
         JLabel lCli = new JLabel("ID Cliente:");
         JLabel lMat = new JLabel("ID Material:");
@@ -48,76 +82,89 @@ public class TelaGarantia extends javax.swing.JFrame {
         jTextData = new JTextField();
 
         JButton btnSalvar = new JButton("Salvar");
+        styleButton(btnSalvar);
         btnSalvar.addActionListener(evt -> salvar());
+        
         JButton btnLimpar = new JButton("Limpar");
-        btnLimpar.addActionListener(evt -> { jTextCliente.setText(""); jTextMaterial.setText(""); jTextMeses.setText(""); jTextData.setText(""); });
+        styleButton(btnLimpar);
+        btnLimpar.addActionListener(evt -> {
+            jTextCliente.setText("");
+            jTextMaterial.setText("");
+            jTextMeses.setText("");
+            jTextData.setText("");
+        });
 
-        GroupLayout layout = new GroupLayout(painel);
-        painel.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup().addContainerGap()
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup().addComponent(btnLimpar).addGap(50).addComponent(btnSalvar))
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                            .addComponent(titulo, GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                    .addComponent(lCli).addComponent(lMat).addComponent(lMeses).addComponent(lData))
-                                .addGap(18)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextCliente).addComponent(jTextMaterial)
-                                    .addComponent(jTextMeses).addComponent(jTextData, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))))
-                    .addContainerGap(20, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createSequentialGroup().addContainerGap()
-                .addComponent(titulo, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE).addGap(18)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lCli).addComponent(jTextCliente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGap(12)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lMat).addComponent(jTextMaterial, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGap(12)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lMeses).addComponent(jTextMeses, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGap(12)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lData).addComponent(jTextData, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGap(25)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(btnSalvar).addComponent(btnLimpar))
-                .addContainerGap(20, Short.MAX_VALUE)
-        );
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.insets = new java.awt.Insets(0, 0, 30, 0); // Bottom margin
+        painel.add(titulo, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.insets = new java.awt.Insets(8, 15, 8, 15);
+        
+        int row = 1;
+        addFormRow(painel, lCli, jTextCliente, gbc, row++);
+        addFormRow(painel, lMat, jTextMaterial, gbc, row++);
+        addFormRow(painel, lMeses, jTextMeses, gbc, row++);
+        addFormRow(painel, lData, jTextData, gbc, row++);
+
+        JPanel btnPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
+        btnPanel.setBackground(new java.awt.Color(245, 245, 247));
+        btnPanel.add(btnLimpar);
+        btnPanel.add(btnSalvar);
+
+        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.insets = new java.awt.Insets(30, 0, 0, 0); // Top margin
+        painel.add(btnPanel, gbc);
+
         return painel;
     }
 
     private JPanel criarPainelVisualizar() {
-        JPanel painel = new JPanel();
-        JLabel titulo = new JLabel("GARANTIAS CADASTRADAS");
-        titulo.setHorizontalAlignment(SwingConstants.CENTER);
-        titulo.setBorder(BorderFactory.createEtchedBorder());
+        JPanel painel = new JPanel(new java.awt.BorderLayout(10, 10));
+        painel.setBackground(new java.awt.Color(245, 245, 247));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        tableModel = new DefaultTableModel(new String[]{"ID Garantia", "ID Cliente", "ID Material", "Meses", "Data Compra"}, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+        JLabel titulo = new JLabel("Garantias Cadastradas");
+        styleTitle(titulo);
+        painel.add(titulo, java.awt.BorderLayout.NORTH);
+
+        tableModel = new DefaultTableModel(
+                new String[] { "ID Garantia", "ID Cliente", "ID Material", "Meses", "Data Compra" }, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         jTable = new JTable(tableModel);
+        jTable.setRowHeight(25);
+        jTable.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.PLAIN, 14));
+        jTable.getTableHeader().setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
         JScrollPane scrollPane = new JScrollPane(jTable);
         jTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        painel.add(scrollPane, java.awt.BorderLayout.CENTER);
 
         JButton btnAtualizar = new JButton("Atualizar Lista");
+        styleButton(btnAtualizar);
         btnAtualizar.addActionListener(evt -> carregarDados());
+
         JButton btnEditar = new JButton("Editar");
+        styleButton(btnEditar);
         btnEditar.addActionListener(evt -> editarSelecionado());
+
         JButton btnExcluir = new JButton("Excluir");
+        styleButton(btnExcluir);
         btnExcluir.addActionListener(evt -> excluirSelecionado());
 
-        GroupLayout layout = new GroupLayout(painel);
-        painel.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(titulo, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
-                .addGroup(layout.createSequentialGroup().addContainerGap().addComponent(scrollPane).addContainerGap())
-                .addGroup(layout.createSequentialGroup().addGap(50).addComponent(btnAtualizar).addGap(40).addComponent(btnEditar).addGap(40).addComponent(btnExcluir).addGap(50))
-        );
-        layout.setVerticalGroup(
-            layout.createSequentialGroup().addContainerGap()
-                .addComponent(titulo, 40, 40, 40).addGap(10)
-                .addComponent(scrollPane, 220, 220, Short.MAX_VALUE).addGap(12)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(btnAtualizar).addComponent(btnEditar).addComponent(btnExcluir))
-                .addContainerGap(12, Short.MAX_VALUE)
-        );
+        JPanel btnPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
+        btnPanel.setBackground(new java.awt.Color(245, 245, 247));
+        btnPanel.add(btnAtualizar);
+        btnPanel.add(btnEditar);
+        btnPanel.add(btnExcluir);
+
+        painel.add(btnPanel, java.awt.BorderLayout.SOUTH);
+
         return painel;
     }
 
@@ -132,7 +179,10 @@ public class TelaGarantia extends javax.swing.JFrame {
             dao_garantia dao = new dao_garantia();
             if (dao.inserirDados(g)) {
                 JOptionPane.showMessageDialog(this, "Garantia inserida com sucesso!");
-                jTextCliente.setText(""); jTextMaterial.setText(""); jTextMeses.setText(""); jTextData.setText("");
+                jTextCliente.setText("");
+                jTextMaterial.setText("");
+                jTextMeses.setText("");
+                jTextData.setText("");
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao inserir garantia!");
             }
@@ -146,21 +196,28 @@ public class TelaGarantia extends javax.swing.JFrame {
         dao_garantia dao = new dao_garantia();
         List<Garantia> lista = dao.listarTodos();
         for (Garantia g : lista) {
-            tableModel.addRow(new Object[]{g.getId_garantia(), g.getId_cliente(), g.getId_material(), g.getMeses_garantia(), g.getData_compra()});
+            tableModel.addRow(new Object[] { g.getId_garantia(), g.getId_cliente(), g.getId_material(),
+                    g.getMeses_garantia(), g.getData_compra() });
         }
     }
 
     private void editarSelecionado() {
         int row = jTable.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione uma garantia."); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma garantia.");
+            return;
+        }
         int id = (int) tableModel.getValueAt(row, 0);
 
         String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
-        if (idCliente == null) return;
+        if (idCliente == null)
+            return;
         String idMaterial = JOptionPane.showInputDialog(this, "ID Material:", tableModel.getValueAt(row, 2));
-        if (idMaterial == null) return;
+        if (idMaterial == null)
+            return;
         String meses = JOptionPane.showInputDialog(this, "Meses Garantia:", tableModel.getValueAt(row, 3));
-        if (meses == null) return;
+        if (meses == null)
+            return;
         String data = JOptionPane.showInputDialog(this, "Data Compra:", tableModel.getValueAt(row, 4));
 
         Garantia g = new Garantia();
@@ -171,18 +228,30 @@ public class TelaGarantia extends javax.swing.JFrame {
         g.setData_compra(data != null ? data : "");
 
         dao_garantia dao = new dao_garantia();
-        if (dao.atualizar(g)) { JOptionPane.showMessageDialog(this, "Atualizado!"); carregarDados(); }
-        else { JOptionPane.showMessageDialog(this, "Erro ao atualizar!"); }
+        if (dao.atualizar(g)) {
+            JOptionPane.showMessageDialog(this, "Atualizado!");
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
+        }
     }
 
     private void excluirSelecionado() {
         int row = jTable.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione uma garantia."); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma garantia.");
+            return;
+        }
         int id = (int) tableModel.getValueAt(row, 0);
-        if (JOptionPane.showConfirmDialog(this, "Excluir garantia ID " + id + "?", "Confirmar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Excluir garantia ID " + id + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             dao_garantia dao = new dao_garantia();
-            if (dao.deletar(id)) { JOptionPane.showMessageDialog(this, "Excluído!"); carregarDados(); }
-            else { JOptionPane.showMessageDialog(this, "Erro ao excluir!"); }
+            if (dao.deletar(id)) {
+                JOptionPane.showMessageDialog(this, "Excluído!");
+                carregarDados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir!");
+            }
         }
     }
 }

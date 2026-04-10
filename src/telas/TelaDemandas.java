@@ -19,6 +19,35 @@ public class TelaDemandas extends javax.swing.JFrame {
         initComponents();
     }
 
+    private void styleButton(JButton btn) {
+        btn.setBackground(new java.awt.Color(0, 113, 227));
+        btn.setForeground(java.awt.Color.WHITE);
+        btn.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.PLAIN, 14));
+        btn.setFocusPainted(false);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }
+
+    private void styleTitle(JLabel label) {
+        label.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 24));
+        label.setForeground(new java.awt.Color(29, 29, 31));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+    private void addFormRow(JPanel painel, JLabel label, JComponent field, java.awt.GridBagConstraints gbc, int row) {
+        gbc.gridx = 0; gbc.gridy = row;
+        gbc.anchor = java.awt.GridBagConstraints.EAST;
+        label.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
+        label.setForeground(new java.awt.Color(29, 29, 31));
+        painel.add(label, gbc);
+
+        gbc.gridx = 1; gbc.gridy = row;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        field.setPreferredSize(new java.awt.Dimension(250, 35));
+        painel.add(field, gbc);
+    }
+
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Demandas");
@@ -27,18 +56,23 @@ public class TelaDemandas extends javax.swing.JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Inserir", criarPainelInserir());
         tabbedPane.addTab("Visualizar", criarPainelVisualizar());
-        tabbedPane.addChangeListener(evt -> { if (tabbedPane.getSelectedIndex() == 1) carregarDados(); });
+        tabbedPane.addChangeListener(evt -> {
+            if (tabbedPane.getSelectedIndex() == 1)
+                carregarDados();
+        });
 
         getContentPane().add(tabbedPane);
-        setSize(620, 480);
+        setSize(620, 650);
         setLocationRelativeTo(null);
     }
 
     private JPanel criarPainelInserir() {
-        JPanel painel = new JPanel();
-        JLabel titulo = new JLabel("INSERIR DEMANDA");
-        titulo.setHorizontalAlignment(SwingConstants.CENTER);
-        titulo.setBorder(BorderFactory.createEtchedBorder());
+        JPanel painel = new JPanel(new java.awt.GridBagLayout());
+        painel.setBackground(new java.awt.Color(245, 245, 247));
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+        JLabel titulo = new JLabel("Inserir Demanda");
+        styleTitle(titulo);
 
         JLabel lIdCli = new JLabel("ID Cliente:");
         JLabel lDesc = new JLabel("Descrição:");
@@ -54,83 +88,99 @@ public class TelaDemandas extends javax.swing.JFrame {
         jTextMatId = new JTextField();
         jTextMatQtd = new JTextField();
         jLabelItensCount = new JLabel("Itens: 0");
+        jLabelItensCount.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
 
         JButton btnAddMat = new JButton("Adicionar Item");
+        styleButton(btnAddMat);
         btnAddMat.addActionListener(evt -> adicionarItem());
         JButton btnSalvar = new JButton("Salvar");
+        styleButton(btnSalvar);
         btnSalvar.addActionListener(evt -> salvar());
         JButton btnLimpar = new JButton("Limpar");
+        styleButton(btnLimpar);
         btnLimpar.addActionListener(evt -> limpar());
 
-        GroupLayout layout = new GroupLayout(painel);
-        painel.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(titulo, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-                .addGroup(layout.createSequentialGroup().addContainerGap()
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(lIdCli).addComponent(lDesc).addComponent(lData).addComponent(lEntr)
-                        .addComponent(lMatId).addComponent(lMatQtd))
-                    .addGap(18)
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jTextIdCliente).addComponent(jTextDescricao).addComponent(jTextData)
-                        .addComponent(jTextEntregue).addComponent(jTextMatId)
-                        .addComponent(jTextMatQtd, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
-                    .addContainerGap())
-                .addGroup(layout.createSequentialGroup().addContainerGap()
-                    .addComponent(btnAddMat).addGap(18).addComponent(jLabelItensCount).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGroup(layout.createSequentialGroup().addGap(80).addComponent(btnLimpar).addGap(60).addComponent(btnSalvar).addGap(0, 0, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createSequentialGroup().addContainerGap()
-                .addComponent(titulo, 40, 40, 40).addGap(12)
-                .addGroup(layout.createParallelGroup().addComponent(lIdCli).addComponent(jTextIdCliente, 25, 25, 25)).addGap(8)
-                .addGroup(layout.createParallelGroup().addComponent(lDesc).addComponent(jTextDescricao, 25, 25, 25)).addGap(8)
-                .addGroup(layout.createParallelGroup().addComponent(lData).addComponent(jTextData, 25, 25, 25)).addGap(8)
-                .addGroup(layout.createParallelGroup().addComponent(lEntr).addComponent(jTextEntregue, 25, 25, 25)).addGap(15)
-                .addGroup(layout.createParallelGroup().addComponent(lMatId).addComponent(jTextMatId, 25, 25, 25)).addGap(8)
-                .addGroup(layout.createParallelGroup().addComponent(lMatQtd).addComponent(jTextMatQtd, 25, 25, 25)).addGap(8)
-                .addGroup(layout.createParallelGroup().addComponent(btnAddMat).addComponent(jLabelItensCount)).addGap(15)
-                .addGroup(layout.createParallelGroup().addComponent(btnLimpar).addComponent(btnSalvar)).addGap(12)
-        );
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.insets = new java.awt.Insets(0, 0, 30, 0); // Bottom margin for title
+        painel.add(titulo, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.insets = new java.awt.Insets(8, 15, 8, 15);
+        
+        int row = 1;
+        addFormRow(painel, lIdCli, jTextIdCliente, gbc, row++);
+        addFormRow(painel, lDesc, jTextDescricao, gbc, row++);
+        addFormRow(painel, lData, jTextData, gbc, row++);
+        addFormRow(painel, lEntr, jTextEntregue, gbc, row++);
+        addFormRow(painel, lMatId, jTextMatId, gbc, row++);
+        addFormRow(painel, lMatQtd, jTextMatQtd, gbc, row++);
+
+        JPanel itemPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 0));
+        itemPanel.setBackground(new java.awt.Color(245, 245, 247));
+        itemPanel.add(btnAddMat);
+        itemPanel.add(jLabelItensCount);
+
+        gbc.gridx = 1; gbc.gridy = row++; 
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        painel.add(itemPanel, gbc);
+
+        JPanel btnPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
+        btnPanel.setBackground(new java.awt.Color(245, 245, 247));
+        btnPanel.add(btnLimpar);
+        btnPanel.add(btnSalvar);
+
+        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2; 
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.insets = new java.awt.Insets(30, 0, 0, 0); // Top margin for buttons
+        painel.add(btnPanel, gbc);
+
         return painel;
     }
 
     private JPanel criarPainelVisualizar() {
-        JPanel painel = new JPanel();
-        JLabel titulo = new JLabel("DEMANDAS CADASTRADAS");
-        titulo.setHorizontalAlignment(SwingConstants.CENTER);
-        titulo.setBorder(BorderFactory.createEtchedBorder());
+        JPanel painel = new JPanel(new java.awt.BorderLayout(10, 10));
+        painel.setBackground(new java.awt.Color(245, 245, 247));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        tableModel = new DefaultTableModel(new String[]{"ID", "ID Cliente", "Descrição", "Data Solicitação", "Entregue"}, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+        JLabel titulo = new JLabel("Demandas Cadastradas");
+        styleTitle(titulo);
+        painel.add(titulo, java.awt.BorderLayout.NORTH);
+
+        tableModel = new DefaultTableModel(
+                new String[] { "ID", "ID Cliente", "Descrição", "Data Solicitação", "Entregue" }, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         jTable = new JTable(tableModel);
+        jTable.setRowHeight(25);
+        jTable.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.PLAIN, 14));
+        jTable.getTableHeader().setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
         JScrollPane scrollPane = new JScrollPane(jTable);
         jTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        painel.add(scrollPane, java.awt.BorderLayout.CENTER);
 
         JButton btnAtualizar = new JButton("Atualizar Lista");
+        styleButton(btnAtualizar);
         btnAtualizar.addActionListener(evt -> carregarDados());
+
         JButton btnEditar = new JButton("Editar");
+        styleButton(btnEditar);
         btnEditar.addActionListener(evt -> editarSelecionado());
+
         JButton btnExcluir = new JButton("Excluir");
+        styleButton(btnExcluir);
         btnExcluir.addActionListener(evt -> excluirSelecionado());
 
-        GroupLayout layout = new GroupLayout(painel);
-        painel.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(titulo, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
-                .addGroup(layout.createSequentialGroup().addContainerGap().addComponent(scrollPane).addContainerGap())
-                .addGroup(layout.createSequentialGroup().addGap(50).addComponent(btnAtualizar).addGap(40).addComponent(btnEditar).addGap(40).addComponent(btnExcluir).addGap(50))
-        );
-        layout.setVerticalGroup(
-            layout.createSequentialGroup().addContainerGap()
-                .addComponent(titulo, 40, 40, 40).addGap(10)
-                .addComponent(scrollPane, 220, 220, Short.MAX_VALUE).addGap(12)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(btnAtualizar).addComponent(btnEditar).addComponent(btnExcluir))
-                .addContainerGap(12, Short.MAX_VALUE)
-        );
+        JPanel btnPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
+        btnPanel.setBackground(new java.awt.Color(245, 245, 247));
+        btnPanel.add(btnAtualizar);
+        btnPanel.add(btnEditar);
+        btnPanel.add(btnExcluir);
+
+        painel.add(btnPanel, java.awt.BorderLayout.SOUTH);
         return painel;
     }
 
@@ -138,10 +188,14 @@ public class TelaDemandas extends javax.swing.JFrame {
         try {
             int idMat = Integer.parseInt(jTextMatId.getText().trim());
             int qtd = Integer.parseInt(jTextMatQtd.getText().trim());
-            if (qtd <= 0) { JOptionPane.showMessageDialog(this, "Quantidade deve ser maior que zero."); return; }
-            itens.add(new int[]{idMat, qtd});
+            if (qtd <= 0) {
+                JOptionPane.showMessageDialog(this, "Quantidade deve ser maior que zero.");
+                return;
+            }
+            itens.add(new int[] { idMat, qtd });
             jLabelItensCount.setText("Itens: " + itens.size());
-            jTextMatId.setText(""); jTextMatQtd.setText("");
+            jTextMatId.setText("");
+            jTextMatQtd.setText("");
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "ID material ou quantidade inválidos.");
         }
@@ -152,26 +206,41 @@ public class TelaDemandas extends javax.swing.JFrame {
             Demandas d = new Demandas();
             d.setId_cliente(Integer.parseInt(jTextIdCliente.getText().trim()));
             String desc = jTextDescricao.getText().trim();
-            if (desc.isEmpty()) { JOptionPane.showMessageDialog(this, "Descrição não pode estar vazia."); return; }
+            if (desc.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Descrição não pode estar vazia.");
+                return;
+            }
             d.setDescricao(desc);
             d.setData_solicitacao(jTextData.getText().trim());
             String ent = jTextEntregue.getText().trim().toUpperCase();
-            if (!ent.equals("S") && !ent.equals("N")) { JOptionPane.showMessageDialog(this, "Entregue deve ser 'S' ou 'N'."); return; }
+            if (!ent.equals("S") && !ent.equals("N")) {
+                JOptionPane.showMessageDialog(this, "Entregue deve ser 'S' ou 'N'.");
+                return;
+            }
             d.setEntregueSouN(ent);
 
             dao_demandas dao = new dao_demandas();
             boolean ok = dao.inserirDadosComMateriais(d, itens);
-            if (ok) { JOptionPane.showMessageDialog(this, "Demanda inserida!"); limpar(); }
-            else { JOptionPane.showMessageDialog(this, "Erro ao inserir demanda."); }
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Demanda inserida!");
+                limpar();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao inserir demanda.");
+            }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "ID Cliente inválido (número).");
         }
     }
 
     private void limpar() {
-        jTextIdCliente.setText(""); jTextDescricao.setText(""); jTextData.setText("");
-        jTextEntregue.setText(""); jTextMatId.setText(""); jTextMatQtd.setText("");
-        itens.clear(); jLabelItensCount.setText("Itens: 0");
+        jTextIdCliente.setText("");
+        jTextDescricao.setText("");
+        jTextData.setText("");
+        jTextEntregue.setText("");
+        jTextMatId.setText("");
+        jTextMatQtd.setText("");
+        itens.clear();
+        jLabelItensCount.setText("Itens: 0");
     }
 
     private void carregarDados() {
@@ -179,23 +248,30 @@ public class TelaDemandas extends javax.swing.JFrame {
         dao_demandas dao = new dao_demandas();
         List<Demandas> lista = dao.listarTodos();
         for (Demandas d : lista) {
-            tableModel.addRow(new Object[]{d.getId(), d.getId_cliente(), d.getDescricao(), d.getData_solicitacao(), d.getEntregueSouN()});
+            tableModel.addRow(new Object[] { d.getId(), d.getId_cliente(), d.getDescricao(), d.getData_solicitacao(),
+                    d.getEntregueSouN() });
         }
     }
 
     private void editarSelecionado() {
         int row = jTable.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione uma demanda."); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma demanda.");
+            return;
+        }
         int id = (int) tableModel.getValueAt(row, 0);
 
         String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
-        if (idCliente == null) return;
+        if (idCliente == null)
+            return;
         String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 2));
-        if (descricao == null) return;
+        if (descricao == null)
+            return;
         String data = JOptionPane.showInputDialog(this, "Data Solicitação:", tableModel.getValueAt(row, 3));
         String entregue = (String) JOptionPane.showInputDialog(this, "Entregue:", "Editar",
-            JOptionPane.QUESTION_MESSAGE, null, new String[]{"S", "N"}, tableModel.getValueAt(row, 4));
-        if (entregue == null) return;
+                JOptionPane.QUESTION_MESSAGE, null, new String[] { "S", "N" }, tableModel.getValueAt(row, 4));
+        if (entregue == null)
+            return;
 
         Demandas d = new Demandas();
         d.setId(id);
@@ -205,18 +281,30 @@ public class TelaDemandas extends javax.swing.JFrame {
         d.setEntregueSouN(entregue);
 
         dao_demandas dao = new dao_demandas();
-        if (dao.atualizar(d)) { JOptionPane.showMessageDialog(this, "Atualizada!"); carregarDados(); }
-        else { JOptionPane.showMessageDialog(this, "Erro ao atualizar!"); }
+        if (dao.atualizar(d)) {
+            JOptionPane.showMessageDialog(this, "Atualizada!");
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
+        }
     }
 
     private void excluirSelecionado() {
         int row = jTable.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione uma demanda."); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma demanda.");
+            return;
+        }
         int id = (int) tableModel.getValueAt(row, 0);
-        if (JOptionPane.showConfirmDialog(this, "Excluir demanda ID " + id + "?", "Confirmar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this, "Excluir demanda ID " + id + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             dao_demandas dao = new dao_demandas();
-            if (dao.deletar(id)) { JOptionPane.showMessageDialog(this, "Excluída!"); carregarDados(); }
-            else { JOptionPane.showMessageDialog(this, "Erro ao excluir!"); }
+            if (dao.deletar(id)) {
+                JOptionPane.showMessageDialog(this, "Excluída!");
+                carregarDados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir!");
+            }
         }
     }
 }

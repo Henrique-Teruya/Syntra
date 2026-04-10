@@ -20,6 +20,35 @@ public class TelaClientes extends javax.swing.JFrame {
         initComponents();
     }
 
+    private void styleButton(JButton btn) {
+        btn.setBackground(new java.awt.Color(0, 113, 227));
+        btn.setForeground(java.awt.Color.WHITE);
+        btn.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.PLAIN, 14));
+        btn.setFocusPainted(false);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }
+
+    private void styleTitle(JLabel label) {
+        label.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 24));
+        label.setForeground(new java.awt.Color(29, 29, 31));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+    private void addFormRow(JPanel painel, JLabel label, JComponent field, java.awt.GridBagConstraints gbc, int row) {
+        gbc.gridx = 0; gbc.gridy = row;
+        gbc.anchor = java.awt.GridBagConstraints.EAST;
+        label.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
+        label.setForeground(new java.awt.Color(29, 29, 31));
+        painel.add(label, gbc);
+
+        gbc.gridx = 1; gbc.gridy = row;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+        field.setPreferredSize(new java.awt.Dimension(250, 35));
+        painel.add(field, gbc);
+    }
+
     private void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Clientes");
@@ -43,17 +72,18 @@ public class TelaClientes extends javax.swing.JFrame {
         });
 
         getContentPane().add(tabbedPane);
-        setSize(720, 480);
+        setSize(720, 650);
         setLocationRelativeTo(null);
     }
 
     // ===================== PAINEL INSERIR =====================
     private JPanel criarPainelInserir() {
-        JPanel painel = new JPanel();
+        JPanel painel = new JPanel(new java.awt.GridBagLayout());
+        painel.setBackground(new java.awt.Color(245, 245, 247));
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
 
-        JLabel jLabelTitulo = new JLabel("CADASTRO DE CLIENTE");
-        jLabelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabelTitulo.setBorder(BorderFactory.createEtchedBorder());
+        JLabel jLabelTitulo = new JLabel("Cadastro de Cliente");
+        styleTitle(jLabelTitulo);
 
         JLabel jLabelTipo = new JLabel("Tipo:");
         JLabel jLabelNome = new JLabel("Nome:");
@@ -81,128 +111,89 @@ public class TelaClientes extends javax.swing.JFrame {
         });
 
         JButton jButtonSalvar = new JButton("Salvar");
+        styleButton(jButtonSalvar);
         jButtonSalvar.addActionListener(evt -> salvar());
 
         JButton jButtonLimpar = new JButton("Limpar");
+        styleButton(jButtonLimpar);
         jButtonLimpar.addActionListener(evt -> limparCampos());
 
-        GroupLayout layout = new GroupLayout(painel);
-        painel.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jButtonLimpar)
-                            .addGap(50)
-                            .addComponent(jButtonSalvar))
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabelTitulo, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabelTipo)
-                                    .addComponent(jLabelNome)
-                                    .addComponent(jLabelGrupo)
-                                    .addComponent(jLabelDocumento)
-                                    .addComponent(jLabelCep)
-                                    .addComponent(jLabelBairro)
-                                    .addComponent(jLabelRua))
-                                .addGap(18)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jComboTipo, 0, 250, Short.MAX_VALUE)
-                                    .addComponent(jTextNome)
-                                    .addComponent(jTextGrupo)
-                                    .addComponent(jTextDocumento)
-                                    .addComponent(jTextCep)
-                                    .addComponent(jTextBairro)
-                                    .addComponent(jTextRua)))))
-                    .addContainerGap(20, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelTitulo, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                .addGap(12)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelTipo).addComponent(jComboTipo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(8)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelNome).addComponent(jTextNome, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(8)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelGrupo).addComponent(jTextGrupo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(8)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelDocumento).addComponent(jTextDocumento, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(8)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelCep).addComponent(jTextCep, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(8)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelBairro).addComponent(jTextBairro, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(8)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelRua).addComponent(jTextRua, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(18)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSalvar).addComponent(jButtonLimpar))
-                .addContainerGap(20, Short.MAX_VALUE)
-        );
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.insets = new java.awt.Insets(0, 0, 30, 0); // Spacing below title
+        painel.add(jLabelTitulo, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.insets = new java.awt.Insets(8, 15, 8, 15);
+        
+        int row = 1;
+        addFormRow(painel, jLabelTipo, jComboTipo, gbc, row++);
+        addFormRow(painel, jLabelNome, jTextNome, gbc, row++);
+        addFormRow(painel, jLabelGrupo, jTextGrupo, gbc, row++);
+        addFormRow(painel, jLabelDocumento, jTextDocumento, gbc, row++);
+        addFormRow(painel, jLabelCep, jTextCep, gbc, row++);
+        addFormRow(painel, jLabelBairro, jTextBairro, gbc, row++);
+        addFormRow(painel, jLabelRua, jTextRua, gbc, row++);
+
+        JPanel btnPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
+        btnPanel.setBackground(new java.awt.Color(245, 245, 247));
+        btnPanel.add(jButtonLimpar);
+        btnPanel.add(jButtonSalvar);
+
+        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.insets = new java.awt.Insets(30, 0, 0, 0); // Spacing above buttons
+        painel.add(btnPanel, gbc);
+
         return painel;
     }
 
     // ===================== PAINEL VISUALIZAR =====================
     private JPanel criarPainelVisualizar() {
-        JPanel painel = new JPanel();
+        JPanel painel = new JPanel(new java.awt.BorderLayout(10, 10));
+        painel.setBackground(new java.awt.Color(245, 245, 247));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel jLabelTitulo = new JLabel("CLIENTES CADASTRADOS");
-        jLabelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabelTitulo.setBorder(BorderFactory.createEtchedBorder());
+        JLabel jLabelTitulo = new JLabel("Clientes Cadastrados");
+        styleTitle(jLabelTitulo);
+        painel.add(jLabelTitulo, java.awt.BorderLayout.NORTH);
 
         tableModel = new DefaultTableModel(
-            new String[]{"ID", "Nome", "Tipo", "CPF/CNPJ", "Grupo", "CEP", "Bairro", "Rua"}, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+                new String[] { "ID", "Nome", "Tipo", "CPF/CNPJ", "Grupo", "CEP", "Bairro", "Rua" }, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         jTable = new JTable(tableModel);
+        jTable.setRowHeight(25);
+        jTable.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.PLAIN, 14));
+        jTable.getTableHeader().setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 14));
+        
         JScrollPane scrollPane = new JScrollPane(jTable);
         jTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        painel.add(scrollPane, java.awt.BorderLayout.CENTER);
 
         JButton btnAtualizar = new JButton("Atualizar Lista");
+        styleButton(btnAtualizar);
         btnAtualizar.addActionListener(evt -> carregarDados());
 
         JButton btnEditar = new JButton("Editar");
+        styleButton(btnEditar);
         btnEditar.addActionListener(evt -> editarSelecionado());
 
         JButton btnExcluir = new JButton("Excluir");
+        styleButton(btnExcluir);
         btnExcluir.addActionListener(evt -> excluirSelecionado());
 
-        GroupLayout layout = new GroupLayout(painel);
-        painel.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(jLabelTitulo, GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(scrollPane)
-                    .addContainerGap())
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(50)
-                    .addComponent(btnAtualizar).addGap(40)
-                    .addComponent(btnEditar).addGap(40)
-                    .addComponent(btnExcluir).addGap(50))
-        );
-        layout.setVerticalGroup(
-            layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelTitulo, 40, 40, 40)
-                .addGap(10)
-                .addComponent(scrollPane, 250, 250, Short.MAX_VALUE)
-                .addGap(12)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAtualizar).addComponent(btnEditar).addComponent(btnExcluir))
-                .addContainerGap(12, Short.MAX_VALUE)
-        );
+        JPanel btnPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
+        btnPanel.setBackground(new java.awt.Color(245, 245, 247));
+        btnPanel.add(btnAtualizar);
+        btnPanel.add(btnEditar);
+        btnPanel.add(btnExcluir);
+
+        painel.add(btnPanel, java.awt.BorderLayout.SOUTH);
+
         return painel;
     }
 
@@ -217,7 +208,10 @@ public class TelaClientes extends javax.swing.JFrame {
             String bairro = jTextBairro.getText().trim();
             String rua = jTextRua.getText().trim();
 
-            if (nome.isEmpty()) { JOptionPane.showMessageDialog(this, "Nome é obrigatório."); return; }
+            if (nome.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nome é obrigatório.");
+                return;
+            }
 
             if (tipo.equals("PESSOA")) {
                 String digits = documento.replaceAll("[^\\d]", "");
@@ -237,8 +231,13 @@ public class TelaClientes extends javax.swing.JFrame {
             c.setTipo(tipo);
             c.setNome(nome);
             c.setGrupo(grupo);
-            if (tipo.equals("PESSOA")) { c.setCPF(documento); c.setCNPJ(""); }
-            else { c.setCNPJ(documento); c.setCPF(""); }
+            if (tipo.equals("PESSOA")) {
+                c.setCPF(documento);
+                c.setCNPJ("");
+            } else {
+                c.setCNPJ(documento);
+                c.setCPF("");
+            }
             c.setCEP(cep);
             c.setBairro(bairro);
             c.setRua(rua);
@@ -258,8 +257,12 @@ public class TelaClientes extends javax.swing.JFrame {
     private void limparCampos() {
         jComboTipo.setSelectedIndex(0);
         jLabelDocumento.setText("CNPJ:");
-        jTextNome.setText(""); jTextGrupo.setText(""); jTextDocumento.setText("");
-        jTextCep.setText(""); jTextBairro.setText(""); jTextRua.setText("");
+        jTextNome.setText("");
+        jTextGrupo.setText("");
+        jTextDocumento.setText("");
+        jTextCep.setText("");
+        jTextBairro.setText("");
+        jTextRua.setText("");
     }
 
     private void carregarDados() {
@@ -268,16 +271,19 @@ public class TelaClientes extends javax.swing.JFrame {
         List<Cliente> lista = dao.listarTodos();
         for (Cliente c : lista) {
             String documento = "PESSOA".equals(c.getTipo()) ? c.getCPF() : c.getCNPJ();
-            tableModel.addRow(new Object[]{
-                c.getId_cliente(), c.getNome(), c.getTipo(), documento,
-                c.getGrupo(), c.getCEP(), c.getBairro(), c.getRua()
+            tableModel.addRow(new Object[] {
+                    c.getId_cliente(), c.getNome(), c.getTipo(), documento,
+                    c.getGrupo(), c.getCEP(), c.getBairro(), c.getRua()
             });
         }
     }
 
     private void editarSelecionado() {
         int row = jTable.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione um cliente."); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente.");
+            return;
+        }
 
         int id = (int) tableModel.getValueAt(row, 0);
 
@@ -289,25 +295,32 @@ public class TelaClientes extends javax.swing.JFrame {
         }
 
         String nome = JOptionPane.showInputDialog(this, "Nome:", clienteOriginal.getNome());
-        if (nome == null) return;
+        if (nome == null)
+            return;
 
         String tipo = (String) JOptionPane.showInputDialog(this, "Tipo:", "Editar Tipo",
-            JOptionPane.QUESTION_MESSAGE, null, new String[]{"EMPRESA", "PESSOA"}, clienteOriginal.getTipo());
-        if (tipo == null) return;
+                JOptionPane.QUESTION_MESSAGE, null, new String[] { "EMPRESA", "PESSOA" }, clienteOriginal.getTipo());
+        if (tipo == null)
+            return;
 
         String docPrompt = "PESSOA".equals(tipo) ? "CPF:" : "CNPJ:";
         String docOriginal = "PESSOA".equals(tipo) ? clienteOriginal.getCPF() : clienteOriginal.getCNPJ();
         String documento = JOptionPane.showInputDialog(this, docPrompt, docOriginal);
-        if (documento == null) return;
+        if (documento == null)
+            return;
 
         String grupo = JOptionPane.showInputDialog(this, "Grupo:", clienteOriginal.getGrupo());
-        if (grupo == null) return;
+        if (grupo == null)
+            return;
         String cep = JOptionPane.showInputDialog(this, "CEP:", clienteOriginal.getCEP());
-        if (cep == null) return;
+        if (cep == null)
+            return;
         String bairro = JOptionPane.showInputDialog(this, "Bairro:", clienteOriginal.getBairro());
-        if (bairro == null) return;
+        if (bairro == null)
+            return;
         String rua = JOptionPane.showInputDialog(this, "Rua:", clienteOriginal.getRua());
-        if (rua == null) return;
+        if (rua == null)
+            return;
 
         Cliente c = new Cliente();
         c.setId_cliente(id);
@@ -335,9 +348,13 @@ public class TelaClientes extends javax.swing.JFrame {
 
     private void excluirSelecionado() {
         int row = jTable.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione um cliente."); return; }
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente.");
+            return;
+        }
         int id = (int) tableModel.getValueAt(row, 0);
-        int confirm = JOptionPane.showConfirmDialog(this, "Excluir cliente ID " + id + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, "Excluir cliente ID " + id + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             dao_clientes dao = new dao_clientes();
             if (dao.deletar(id)) {

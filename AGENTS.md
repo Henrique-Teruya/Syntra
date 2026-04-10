@@ -141,6 +141,12 @@ Cada DAO deve conter, no mínimo:
 
 ## 6. Interface Gráfica (Swing)
 
+### Design System (Apple / DESIGN.md)
+- Todas as futuras modificações visuais **DEVEM** seguir rigorosamente as referências descritas no arquivo `DESIGN.md`. 
+- **Cores**: Aplicar a paleta primária do design system (como cinza informacional `#f5f5f7` `245,245,247` para o fundo e `#1d1d1f` `29,29,31` para texto).
+- **Acento / Botões**: Sempre utilize o **Apple Blue** (`#0071e3` `0,113,227`) para botões de ação e CTAs. Para botões no Swing: configurar `setFocusPainted(false)`, `setOpaque(true)` e `setBorderPainted(false)` usando fore color white, garantindo o visual flat.
+- **Tipografia e Bordas**: Remover lixos visuais nativos (exemplo: `BorderFactory.createEtchedBorder()`). Títulos devem ser proeminentes, com tamanho grande (ex: BOLD 24 ou BOLD 40) e fontes limpas ("Helvetica Neue" ou similar). Sem backgrounds distrativos.
+
 ### Padrão de Abas
 - `JTabbedPane` com aba 0 = "Inserir", aba 1 = "Visualizar".
 - `ChangeListener` na aba de visualização invoca `carregarDados()`.
