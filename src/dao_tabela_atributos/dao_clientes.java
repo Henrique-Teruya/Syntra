@@ -158,16 +158,34 @@ public class dao_clientes {
     // DELETAR CLIENTE
     public boolean deletar(int id) {
         if (conectar == null) return false;
-        String sql = "DELETE FROM cliente WHERE id_cliente = ?";
+        String delDemMat = "DELETE FROM demandas_materiais WHERE id_demanda IN (SELECT id FROM demandas WHERE id_cliente = ?)";
+        String delGarantia = "DELETE FROM garantia WHERE id_cliente = ?";
+        String delDem = "DELETE FROM demandas WHERE id_cliente = ?";
+        String delCli = "DELETE FROM cliente WHERE id_cliente = ?";
+        
         try {
-            PreparedStatement stmt = conectar.prepareStatement(sql);
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-            stmt.close();
+            conectar.setAutoCommit(false);
+
+            PreparedStatement s1 = conectar.prepareStatement(delDemMat);
+            s1.setInt(1, id); s1.executeUpdate(); s1.close();
+            
+            PreparedStatement s2 = conectar.prepareStatement(delGarantia);
+            s2.setInt(1, id); s2.executeUpdate(); s2.close();
+            
+            PreparedStatement s3 = conectar.prepareStatement(delDem);
+            s3.setInt(1, id); s3.executeUpdate(); s3.close();
+
+            PreparedStatement s4 = conectar.prepareStatement(delCli);
+            s4.setInt(1, id); s4.executeUpdate(); s4.close();
+
+            conectar.commit();
             return true;
         } catch (SQLException e) {
+            try { conectar.rollback(); } catch(SQLException ex) {}
             System.out.println("Erro ao deletar cliente: " + e.getMessage());
             return false;
+        } finally {
+            try { conectar.setAutoCommit(true); } catch(SQLException e) {}
         }
     }
 }

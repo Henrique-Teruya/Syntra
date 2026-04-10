@@ -41,13 +41,24 @@ public class dao_demandas {
             }
 
             PreparedStatement stmtItem = conectar.prepareStatement(sqlItens);
+            String sqlEstoque = "INSERT INTO estoque_mov (id_material, descricao, quantidade, tipo_mov, data_mov) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement stmtEstoque = conectar.prepareStatement(sqlEstoque);
+
             for (int[] item : itens) {
                 stmtItem.setInt(1, idGerado);
-                stmtItem.setInt(2, item[0]);
-                stmtItem.setInt(3, item[1]);
+                stmtItem.setInt(2, item[0]); // id_material
+                stmtItem.setInt(3, item[1]); // quantidade_usada
                 stmtItem.addBatch();
+
+                stmtEstoque.setInt(1, item[0]); // id_material
+                stmtEstoque.setString(2, "Saída ref. demanda " + idGerado);
+                stmtEstoque.setInt(3, item[1]); // quantidade
+                stmtEstoque.setString(4, "SAIDA");
+                stmtEstoque.setString(5, demanda.getData_solicitacao());
+                stmtEstoque.addBatch();
             }
             stmtItem.executeBatch();
+            stmtEstoque.executeBatch();
 
             conectar.commit();
             return true;
@@ -149,16 +160,36 @@ public class dao_demandas {
     // DELETAR DEMANDA
     public boolean deletar(int id) {
         if (conectar == null) return false;
-        String sql = "DELETE FROM demandas WHERE id = ?";
+        String delMateriais = "DELETE FROM demandas_materiais WHERE id_demanda = ?";
+        String delGarantia = "DELETE FROM garantia WHERE id_demanda = ?";
+        String delDemanda = "DELETE FROM demandas WHERE id = ?";
+        
         try {
-            PreparedStatement stmt = conectar.prepareStatement(sql);
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-            stmt.close();
+            conectar.setAutoCommit(false);
+
+            PreparedStatement stmt1 = conectar.prepareStatement(delMateriais);
+            stmt1.setInt(1, id);
+            stmt1.executeUpdate();
+            stmt1.close();
+
+            PreparedStatement stmt2 = conectar.prepareStatement(delGarantia);
+            stmt2.setInt(1, id);
+            stmt2.executeUpdate();
+            stmt2.close();
+
+            PreparedStatement stmt3 = conectar.prepareStatement(delDemanda);
+            stmt3.setInt(1, id);
+            stmt3.executeUpdate();
+            stmt3.close();
+
+            conectar.commit();
             return true;
         } catch (SQLException e) {
+            try { conectar.rollback(); } catch (SQLException ex) {}
             System.out.println("Erro ao deletar demanda: " + e.getMessage());
             return false;
+        } finally {
+            try { conectar.setAutoCommit(true); } catch (SQLException e) {}
         }
     }
 }
