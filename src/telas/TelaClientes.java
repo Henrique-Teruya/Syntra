@@ -247,10 +247,10 @@ public class TelaClientes extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Cliente inserido com sucesso!");
                 limparCampos();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao inserir cliente!");
+                JOptionPane.showMessageDialog(this, "Erro ao inserir cliente!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao salvar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -266,103 +266,115 @@ public class TelaClientes extends javax.swing.JFrame {
     }
 
     private void carregarDados() {
-        tableModel.setRowCount(0);
-        dao_clientes dao = new dao_clientes();
-        List<Cliente> lista = dao.listarTodos();
-        for (Cliente c : lista) {
-            String documento = "PESSOA".equals(c.getTipo()) ? c.getCPF() : c.getCNPJ();
-            tableModel.addRow(new Object[] {
-                    c.getId_cliente(), c.getNome(), c.getTipo(), documento,
-                    c.getGrupo(), c.getCEP(), c.getBairro(), c.getRua()
-            });
+        try {
+            tableModel.setRowCount(0);
+            dao_clientes dao = new dao_clientes();
+            List<Cliente> lista = dao.listarTodos();
+            for (Cliente c : lista) {
+                String documento = "PESSOA".equals(c.getTipo()) ? c.getCPF() : c.getCNPJ();
+                tableModel.addRow(new Object[] {
+                        c.getId_cliente(), c.getNome(), c.getTipo(), documento,
+                        c.getGrupo(), c.getCEP(), c.getBairro(), c.getRua()
+                });
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void editarSelecionado() {
-        int row = jTable.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Selecione um cliente.");
-            return;
-        }
+        try {
+            int row = jTable.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Selecione um cliente.");
+                return;
+            }
 
-        int id = (int) tableModel.getValueAt(row, 0);
+            int id = (int) tableModel.getValueAt(row, 0);
 
-        dao_clientes dao = new dao_clientes();
-        Cliente clienteOriginal = dao.getCliente(id);
-        if (clienteOriginal == null) {
-            JOptionPane.showMessageDialog(this, "Erro ao recuperar dados do cliente.");
-            return;
-        }
+            dao_clientes dao = new dao_clientes();
+            Cliente clienteOriginal = dao.getCliente(id);
+            if (clienteOriginal == null) {
+                JOptionPane.showMessageDialog(this, "Erro ao recuperar dados do cliente.");
+                return;
+            }
 
-        String nome = JOptionPane.showInputDialog(this, "Nome:", clienteOriginal.getNome());
-        if (nome == null)
-            return;
+            String nome = JOptionPane.showInputDialog(this, "Nome:", clienteOriginal.getNome());
+            if (nome == null)
+                return;
 
-        String tipo = (String) JOptionPane.showInputDialog(this, "Tipo:", "Editar Tipo",
-                JOptionPane.QUESTION_MESSAGE, null, new String[] { "EMPRESA", "PESSOA" }, clienteOriginal.getTipo());
-        if (tipo == null)
-            return;
+            String tipo = (String) JOptionPane.showInputDialog(this, "Tipo:", "Editar Tipo",
+                    JOptionPane.QUESTION_MESSAGE, null, new String[] { "EMPRESA", "PESSOA" }, clienteOriginal.getTipo());
+            if (tipo == null)
+                return;
 
-        String docPrompt = "PESSOA".equals(tipo) ? "CPF:" : "CNPJ:";
-        String docOriginal = "PESSOA".equals(tipo) ? clienteOriginal.getCPF() : clienteOriginal.getCNPJ();
-        String documento = JOptionPane.showInputDialog(this, docPrompt, docOriginal);
-        if (documento == null)
-            return;
+            String docPrompt = "PESSOA".equals(tipo) ? "CPF:" : "CNPJ:";
+            String docOriginal = "PESSOA".equals(tipo) ? clienteOriginal.getCPF() : clienteOriginal.getCNPJ();
+            String documento = JOptionPane.showInputDialog(this, docPrompt, docOriginal);
+            if (documento == null)
+                return;
 
-        String grupo = JOptionPane.showInputDialog(this, "Grupo:", clienteOriginal.getGrupo());
-        if (grupo == null)
-            return;
-        String cep = JOptionPane.showInputDialog(this, "CEP:", clienteOriginal.getCEP());
-        if (cep == null)
-            return;
-        String bairro = JOptionPane.showInputDialog(this, "Bairro:", clienteOriginal.getBairro());
-        if (bairro == null)
-            return;
-        String rua = JOptionPane.showInputDialog(this, "Rua:", clienteOriginal.getRua());
-        if (rua == null)
-            return;
+            String grupo = JOptionPane.showInputDialog(this, "Grupo:", clienteOriginal.getGrupo());
+            if (grupo == null)
+                return;
+            String cep = JOptionPane.showInputDialog(this, "CEP:", clienteOriginal.getCEP());
+            if (cep == null)
+                return;
+            String bairro = JOptionPane.showInputDialog(this, "Bairro:", clienteOriginal.getBairro());
+            if (bairro == null)
+                return;
+            String rua = JOptionPane.showInputDialog(this, "Rua:", clienteOriginal.getRua());
+            if (rua == null)
+                return;
 
-        Cliente c = new Cliente();
-        c.setId_cliente(id);
-        c.setNome(nome);
-        c.setTipo(tipo);
-        if ("PESSOA".equals(tipo)) {
-            c.setCPF(documento);
-            c.setCNPJ("");
-        } else {
-            c.setCNPJ(documento);
-            c.setCPF("");
-        }
-        c.setGrupo(grupo);
-        c.setCEP(cep);
-        c.setBairro(bairro);
-        c.setRua(rua);
+            Cliente c = new Cliente();
+            c.setId_cliente(id);
+            c.setNome(nome);
+            c.setTipo(tipo);
+            if ("PESSOA".equals(tipo)) {
+                c.setCPF(documento);
+                c.setCNPJ("");
+            } else {
+                c.setCNPJ(documento);
+                c.setCPF("");
+            }
+            c.setGrupo(grupo);
+            c.setCEP(cep);
+            c.setBairro(bairro);
+            c.setRua(rua);
 
-        if (dao.atualizar(c)) {
-            JOptionPane.showMessageDialog(this, "Cliente atualizado!");
-            carregarDados();
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
+            if (dao.atualizar(c)) {
+                JOptionPane.showMessageDialog(this, "Cliente atualizado!");
+                carregarDados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao editar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void excluirSelecionado() {
-        int row = jTable.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Selecione um cliente.");
-            return;
-        }
-        int id = (int) tableModel.getValueAt(row, 0);
-        int confirm = JOptionPane.showConfirmDialog(this, "Excluir cliente ID " + id + "?", "Confirmar",
-                JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            dao_clientes dao = new dao_clientes();
-            if (dao.deletar(id)) {
-                JOptionPane.showMessageDialog(this, "Excluído!");
-                carregarDados();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao excluir!");
+        try {
+            int row = jTable.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Selecione um cliente.");
+                return;
             }
+            int id = (int) tableModel.getValueAt(row, 0);
+            int confirm = JOptionPane.showConfirmDialog(this, "Excluir cliente ID " + id + "?", "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                dao_clientes dao = new dao_clientes();
+                if (dao.deletar(id)) {
+                    JOptionPane.showMessageDialog(this, "Excluído!");
+                    carregarDados();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao excluir!");
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao excluir cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

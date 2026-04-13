@@ -225,10 +225,10 @@ public class TelaDemandas extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Demanda inserida!");
                 limpar();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao inserir demanda.");
+                JOptionPane.showMessageDialog(this, "Erro ao inserir demanda.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "ID Cliente inválido (número).");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar demanda: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -244,67 +244,79 @@ public class TelaDemandas extends javax.swing.JFrame {
     }
 
     private void carregarDados() {
-        tableModel.setRowCount(0);
-        dao_demandas dao = new dao_demandas();
-        List<Demandas> lista = dao.listarTodos();
-        for (Demandas d : lista) {
-            tableModel.addRow(new Object[] { d.getId(), d.getId_cliente(), d.getDescricao(), d.getData_solicitacao(),
-                    d.getEntregueSouN() });
+        try {
+            tableModel.setRowCount(0);
+            dao_demandas dao = new dao_demandas();
+            List<Demandas> lista = dao.listarTodos();
+            for (Demandas d : lista) {
+                tableModel.addRow(new Object[] { d.getId(), d.getId_cliente(), d.getDescricao(), d.getData_solicitacao(),
+                        d.getEntregueSouN() });
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void editarSelecionado() {
-        int row = jTable.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Selecione uma demanda.");
-            return;
-        }
-        int id = (int) tableModel.getValueAt(row, 0);
+        try {
+            int row = jTable.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Selecione uma demanda.");
+                return;
+            }
+            int id = (int) tableModel.getValueAt(row, 0);
 
-        String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
-        if (idCliente == null)
-            return;
-        String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 2));
-        if (descricao == null)
-            return;
-        String data = JOptionPane.showInputDialog(this, "Data Solicitação:", tableModel.getValueAt(row, 3));
-        String entregue = (String) JOptionPane.showInputDialog(this, "Entregue:", "Editar",
-                JOptionPane.QUESTION_MESSAGE, null, new String[] { "S", "N" }, tableModel.getValueAt(row, 4));
-        if (entregue == null)
-            return;
+            String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
+            if (idCliente == null)
+                return;
+            String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 2));
+            if (descricao == null)
+                return;
+            String data = JOptionPane.showInputDialog(this, "Data Solicitação:", tableModel.getValueAt(row, 3));
+            String entregue = (String) JOptionPane.showInputDialog(this, "Entregue:", "Editar",
+                    JOptionPane.QUESTION_MESSAGE, null, new String[] { "S", "N" }, tableModel.getValueAt(row, 4));
+            if (entregue == null)
+                return;
 
-        Demandas d = new Demandas();
-        d.setId(id);
-        d.setId_cliente(Integer.parseInt(idCliente));
-        d.setDescricao(descricao);
-        d.setData_solicitacao(data != null ? data : "");
-        d.setEntregueSouN(entregue);
+            Demandas d = new Demandas();
+            d.setId(id);
+            d.setId_cliente(Integer.parseInt(idCliente));
+            d.setDescricao(descricao);
+            d.setData_solicitacao(data != null ? data : "");
+            d.setEntregueSouN(entregue);
 
-        dao_demandas dao = new dao_demandas();
-        if (dao.atualizar(d)) {
-            JOptionPane.showMessageDialog(this, "Atualizada!");
-            carregarDados();
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
+            dao_demandas dao = new dao_demandas();
+            if (dao.atualizar(d)) {
+                JOptionPane.showMessageDialog(this, "Atualizada!");
+                carregarDados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao editar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void excluirSelecionado() {
-        int row = jTable.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Selecione uma demanda.");
-            return;
-        }
-        int id = (int) tableModel.getValueAt(row, 0);
-        if (JOptionPane.showConfirmDialog(this, "Excluir demanda ID " + id + "?", "Confirmar",
-                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            dao_demandas dao = new dao_demandas();
-            if (dao.deletar(id)) {
-                JOptionPane.showMessageDialog(this, "Excluída!");
-                carregarDados();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao excluir!");
+        try {
+            int row = jTable.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Selecione uma demanda.");
+                return;
             }
+            int id = (int) tableModel.getValueAt(row, 0);
+            if (JOptionPane.showConfirmDialog(this, "Excluir demanda ID " + id + "?", "Confirmar",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                dao_demandas dao = new dao_demandas();
+                if (dao.deletar(id)) {
+                    JOptionPane.showMessageDialog(this, "Excluída!");
+                    carregarDados();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao excluir!");
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
