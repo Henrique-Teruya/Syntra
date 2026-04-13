@@ -14,6 +14,7 @@ public class Principal {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+    com.formdev.flatlaf.FlatLightLaf.setup();
 
     Conexao connect = new Conexao();
     connect.getConexao();
