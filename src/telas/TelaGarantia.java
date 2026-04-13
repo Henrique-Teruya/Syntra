@@ -184,86 +184,74 @@ public class TelaGarantia extends javax.swing.JFrame {
                 jTextMeses.setText("");
                 jTextData.setText("");
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao inserir garantia!", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro ao inserir garantia!");
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar garantia: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro: Verifique os campos.");
         }
     }
 
     private void carregarDados() {
-        try {
-            tableModel.setRowCount(0);
-            dao_garantia dao = new dao_garantia();
-            List<Garantia> lista = dao.listarTodos();
-            for (Garantia g : lista) {
-                tableModel.addRow(new Object[] { g.getId_garantia(), g.getId_cliente(), g.getId_material(),
-                        g.getMeses_garantia(), g.getData_compra() });
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        tableModel.setRowCount(0);
+        dao_garantia dao = new dao_garantia();
+        List<Garantia> lista = dao.listarTodos();
+        for (Garantia g : lista) {
+            tableModel.addRow(new Object[] { g.getId_garantia(), g.getId_cliente(), g.getId_material(),
+                    g.getMeses_garantia(), g.getData_compra() });
         }
     }
 
     private void editarSelecionado() {
-        try {
-            int row = jTable.getSelectedRow();
-            if (row < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione uma garantia.");
-                return;
-            }
-            int id = (int) tableModel.getValueAt(row, 0);
+        int row = jTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma garantia.");
+            return;
+        }
+        int id = (int) tableModel.getValueAt(row, 0);
 
-            String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
-            if (idCliente == null)
-                return;
-            String idMaterial = JOptionPane.showInputDialog(this, "ID Material:", tableModel.getValueAt(row, 2));
-            if (idMaterial == null)
-                return;
-            String meses = JOptionPane.showInputDialog(this, "Meses Garantia:", tableModel.getValueAt(row, 3));
-            if (meses == null)
-                return;
-            String data = JOptionPane.showInputDialog(this, "Data Compra:", tableModel.getValueAt(row, 4));
+        String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
+        if (idCliente == null)
+            return;
+        String idMaterial = JOptionPane.showInputDialog(this, "ID Material:", tableModel.getValueAt(row, 2));
+        if (idMaterial == null)
+            return;
+        String meses = JOptionPane.showInputDialog(this, "Meses Garantia:", tableModel.getValueAt(row, 3));
+        if (meses == null)
+            return;
+        String data = JOptionPane.showInputDialog(this, "Data Compra:", tableModel.getValueAt(row, 4));
 
-            Garantia g = new Garantia();
-            g.setId_garantia(id);
-            g.setId_cliente(Integer.parseInt(idCliente));
-            g.setId_material(Integer.parseInt(idMaterial));
-            g.setMeses_garantia(Integer.parseInt(meses));
-            g.setData_compra(data != null ? data : "");
+        Garantia g = new Garantia();
+        g.setId_garantia(id);
+        g.setId_cliente(Integer.parseInt(idCliente));
+        g.setId_material(Integer.parseInt(idMaterial));
+        g.setMeses_garantia(Integer.parseInt(meses));
+        g.setData_compra(data != null ? data : "");
 
-            dao_garantia dao = new dao_garantia();
-            if (dao.atualizar(g)) {
-                JOptionPane.showMessageDialog(this, "Atualizado!");
-                carregarDados();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao editar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        dao_garantia dao = new dao_garantia();
+        if (dao.atualizar(g)) {
+            JOptionPane.showMessageDialog(this, "Atualizado!");
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
         }
     }
 
     private void excluirSelecionado() {
-        try {
-            int row = jTable.getSelectedRow();
-            if (row < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione uma garantia.");
-                return;
+        int row = jTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma garantia.");
+            return;
+        }
+        int id = (int) tableModel.getValueAt(row, 0);
+        if (JOptionPane.showConfirmDialog(this, "Excluir garantia ID " + id + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            dao_garantia dao = new dao_garantia();
+            if (dao.deletar(id)) {
+                JOptionPane.showMessageDialog(this, "Excluído!");
+                carregarDados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir!");
             }
-            int id = (int) tableModel.getValueAt(row, 0);
-            if (JOptionPane.showConfirmDialog(this, "Excluir garantia ID " + id + "?", "Confirmar",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dao_garantia dao = new dao_garantia();
-                if (dao.deletar(id)) {
-                    JOptionPane.showMessageDialog(this, "Excluído!");
-                    carregarDados();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao excluir!");
-                }
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

@@ -199,101 +199,89 @@ public class TelaEstoque extends javax.swing.JFrame {
                 jTextDataMov.setText("");
                 jComboTipo.setSelectedIndex(0);
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao registrar movimento.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro ao registrar movimento.");
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar movimento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID Material ou Quantidade inválida.");
         }
     }
 
     private void carregarDados() {
-        try {
-            tableModel.setRowCount(0);
-            dao_estoque dao = new dao_estoque();
-            List<Estoque> lista = dao.listarTodos();
-            for (Estoque e : lista) {
-                tableModel.addRow(new Object[] { e.getId_mov(), e.getId_material(), e.getDescricao(), e.getQuantidade(),
-                        e.getTipo_mov(), e.getData_mov() });
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        tableModel.setRowCount(0);
+        dao_estoque dao = new dao_estoque();
+        List<Estoque> lista = dao.listarTodos();
+        for (Estoque e : lista) {
+            tableModel.addRow(new Object[] { e.getId_mov(), e.getId_material(), e.getDescricao(), e.getQuantidade(),
+                    e.getTipo_mov(), e.getData_mov() });
         }
     }
 
     private void editarSelecionado() {
-        try {
-            int row = jTable.getSelectedRow();
-            if (row < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione um registro.");
-                return;
-            }
-            int idMov = (int) tableModel.getValueAt(row, 0);
+        int row = jTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um registro.");
+            return;
+        }
+        int idMov = (int) tableModel.getValueAt(row, 0);
 
-            dao_estoque dao = new dao_estoque();
-            Estoque original = dao.getEstoque(idMov);
+        dao_estoque dao = new dao_estoque();
+        Estoque original = dao.getEstoque(idMov);
 
-            if (original == null) {
-                JOptionPane.showMessageDialog(this, "Erro ao recuperar dados.");
-                return;
-            }
+        if (original == null) {
+            JOptionPane.showMessageDialog(this, "Erro ao recuperar dados.");
+            return;
+        }
 
-            String tipoMov = (String) JOptionPane.showInputDialog(this, "Tipo:", "Editar",
-                    JOptionPane.QUESTION_MESSAGE, null, new String[] { "ENTRADA", "SAIDA" }, original.getTipo_mov());
-            if (tipoMov == null)
-                return;
+        String tipoMov = (String) JOptionPane.showInputDialog(this, "Tipo:", "Editar",
+                JOptionPane.QUESTION_MESSAGE, null, new String[] { "ENTRADA", "SAIDA" }, original.getTipo_mov());
+        if (tipoMov == null)
+            return;
 
-            String descricao = JOptionPane.showInputDialog(this, "Descrição:", original.getDescricao());
-            if (descricao == null)
-                return;
+        String descricao = JOptionPane.showInputDialog(this, "Descrição:", original.getDescricao());
+        if (descricao == null)
+            return;
 
-            String quantidadeStr = JOptionPane.showInputDialog(this, "Quantidade:", original.getQuantidade());
-            if (quantidadeStr == null)
-                return;
-            int quantidade = Integer.parseInt(quantidadeStr);
+        String quantidadeStr = JOptionPane.showInputDialog(this, "Quantidade:", original.getQuantidade());
+        if (quantidadeStr == null)
+            return;
+        int quantidade = Integer.parseInt(quantidadeStr);
 
-            String dataMov = JOptionPane.showInputDialog(this, "Data:", original.getData_mov());
-            if (dataMov == null)
-                return;
+        String dataMov = JOptionPane.showInputDialog(this, "Data:", original.getData_mov());
+        if (dataMov == null)
+            return;
 
-            Estoque e = new Estoque();
-            e.setId_mov(idMov);
-            e.setId_material(original.getId_material()); // Não é dado opção de editar o id_material
-            e.setTipo_mov(tipoMov);
-            e.setDescricao(descricao);
-            e.setQuantidade(quantidade);
-            e.setData_mov(dataMov);
+        Estoque e = new Estoque();
+        e.setId_mov(idMov);
+        e.setId_material(original.getId_material()); // Não é dado opção de editar o id_material
+        e.setTipo_mov(tipoMov);
+        e.setDescricao(descricao);
+        e.setQuantidade(quantidade);
+        e.setData_mov(dataMov);
 
-            if (dao.atualizar(e)) {
-                JOptionPane.showMessageDialog(this, "Atualizado!");
-                carregarDados();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao editar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        if (dao.atualizar(e)) {
+            JOptionPane.showMessageDialog(this, "Atualizado!");
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
         }
     }
 
     private void excluirSelecionado() {
-        try {
-            int row = jTable.getSelectedRow();
-            if (row < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione um registro.");
-                return;
+        int row = jTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um registro.");
+            return;
+        }
+        int idMov = (int) tableModel.getValueAt(row, 0);
+        if (JOptionPane.showConfirmDialog(this, "Excluir movimento ID " + idMov + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            dao_estoque dao = new dao_estoque();
+            if (dao.deletar(idMov)) {
+                JOptionPane.showMessageDialog(this, "Excluído!");
+                carregarDados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir!");
             }
-            int idMov = (int) tableModel.getValueAt(row, 0);
-            if (JOptionPane.showConfirmDialog(this, "Excluir movimento ID " + idMov + "?", "Confirmar",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dao_estoque dao = new dao_estoque();
-                if (dao.deletar(idMov)) {
-                    JOptionPane.showMessageDialog(this, "Excluído!");
-                    carregarDados();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao excluir!");
-                }
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
