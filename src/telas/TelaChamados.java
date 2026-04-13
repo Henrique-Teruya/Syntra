@@ -189,88 +189,76 @@ public class TelaChamados extends javax.swing.JFrame {
                 jTextDescricao.setText("");
                 jTextData.setText("");
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao inserir chamado.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro ao inserir chamado.");
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar chamado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID Cliente inválido (somente números).");
         }
     }
 
     private void carregarDados() {
-        try {
-            tableModel.setRowCount(0);
-            dao_chamados dao = new dao_chamados();
-            List<Chamados> lista = dao.listarTodos();
-            for (Chamados ch : lista) {
-                tableModel.addRow(new Object[] { ch.getId_chamado(), ch.getId_cliente(), ch.getDescricao(),
-                        ch.getData_abertura(), ch.getStatus() });
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        tableModel.setRowCount(0);
+        dao_chamados dao = new dao_chamados();
+        List<Chamados> lista = dao.listarTodos();
+        for (Chamados ch : lista) {
+            tableModel.addRow(new Object[] { ch.getId_chamado(), ch.getId_cliente(), ch.getDescricao(),
+                    ch.getData_abertura(), ch.getStatus() });
         }
     }
 
     private void editarSelecionado() {
-        try {
-            int row = jTable.getSelectedRow();
-            if (row < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione um chamado.");
-                return;
-            }
-            int id = (int) tableModel.getValueAt(row, 0);
+        int row = jTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um chamado.");
+            return;
+        }
+        int id = (int) tableModel.getValueAt(row, 0);
 
-            String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
-            if (idCliente == null)
-                return;
-            String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 2));
-            if (descricao == null)
-                return;
-            String data = JOptionPane.showInputDialog(this, "Data Abertura:", tableModel.getValueAt(row, 3));
-            String status = (String) JOptionPane.showInputDialog(this, "Status:", "Editar Status",
-                    JOptionPane.QUESTION_MESSAGE, null, new String[] { "ABERTO", "EM ANDAMENTO", "FECHADO" },
-                    tableModel.getValueAt(row, 4));
-            if (status == null)
-                return;
+        String idCliente = JOptionPane.showInputDialog(this, "ID Cliente:", tableModel.getValueAt(row, 1));
+        if (idCliente == null)
+            return;
+        String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 2));
+        if (descricao == null)
+            return;
+        String data = JOptionPane.showInputDialog(this, "Data Abertura:", tableModel.getValueAt(row, 3));
+        String status = (String) JOptionPane.showInputDialog(this, "Status:", "Editar Status",
+                JOptionPane.QUESTION_MESSAGE, null, new String[] { "ABERTO", "EM ANDAMENTO", "FECHADO" },
+                tableModel.getValueAt(row, 4));
+        if (status == null)
+            return;
 
-            Chamados ch = new Chamados();
-            ch.setId_chamado(id);
-            ch.setId_cliente(Integer.parseInt(idCliente));
-            ch.setDescricao(descricao);
-            ch.setData_abertura(data != null ? data : "");
-            ch.setStatus(status);
+        Chamados ch = new Chamados();
+        ch.setId_chamado(id);
+        ch.setId_cliente(Integer.parseInt(idCliente));
+        ch.setDescricao(descricao);
+        ch.setData_abertura(data != null ? data : "");
+        ch.setStatus(status);
 
-            dao_chamados dao = new dao_chamados();
-            if (dao.atualizar(ch)) {
-                JOptionPane.showMessageDialog(this, "Atualizado!");
-                carregarDados();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao editar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        dao_chamados dao = new dao_chamados();
+        if (dao.atualizar(ch)) {
+            JOptionPane.showMessageDialog(this, "Atualizado!");
+            carregarDados();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar!");
         }
     }
 
     private void excluirSelecionado() {
-        try {
-            int row = jTable.getSelectedRow();
-            if (row < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione um chamado.");
-                return;
+        int row = jTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um chamado.");
+            return;
+        }
+        int id = (int) tableModel.getValueAt(row, 0);
+        if (JOptionPane.showConfirmDialog(this, "Excluir chamado ID " + id + "?", "Confirmar",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            dao_chamados dao = new dao_chamados();
+            if (dao.deletar(id)) {
+                JOptionPane.showMessageDialog(this, "Excluído!");
+                carregarDados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir!");
             }
-            int id = (int) tableModel.getValueAt(row, 0);
-            if (JOptionPane.showConfirmDialog(this, "Excluir chamado ID " + id + "?", "Confirmar",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                dao_chamados dao = new dao_chamados();
-                if (dao.deletar(id)) {
-                    JOptionPane.showMessageDialog(this, "Excluído!");
-                    carregarDados();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao excluir!");
-                }
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
