@@ -2,6 +2,7 @@ package telas;
 
 import dao_tabela_atributos.dao_demandas;
 import tabelaatributos.Demandas;
+import utils.DateUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class TelaDemandas extends javax.swing.JFrame {
 
         JLabel lIdCli = new JLabel("ID Cliente:");
         JLabel lDesc = new JLabel("Descrição:");
-        JLabel lData = new JLabel("Data (AAAA-MM-DD):");
+        JLabel lData = new JLabel("Data (DD/MM/AAAA):");
         JLabel lEntr = new JLabel("Entregue (S/N):");
         JLabel lMatId = new JLabel("ID Material:");
         JLabel lMatQtd = new JLabel("Qtd:");
@@ -211,7 +212,7 @@ public class TelaDemandas extends javax.swing.JFrame {
                 return;
             }
             d.setDescricao(desc);
-            d.setData_solicitacao(jTextData.getText().trim());
+            d.setData_solicitacao(DateUtils.uiToDb(jTextData.getText().trim()));
             String ent = jTextEntregue.getText().trim().toUpperCase();
             if (!ent.equals("S") && !ent.equals("N")) {
                 JOptionPane.showMessageDialog(this, "Entregue deve ser 'S' ou 'N'.");
@@ -248,7 +249,7 @@ public class TelaDemandas extends javax.swing.JFrame {
         dao_demandas dao = new dao_demandas();
         List<Demandas> lista = dao.listarTodos();
         for (Demandas d : lista) {
-            tableModel.addRow(new Object[] { d.getId(), d.getId_cliente(), d.getDescricao(), d.getData_solicitacao(),
+            tableModel.addRow(new Object[] { d.getId(), d.getId_cliente(), d.getDescricao(), DateUtils.dbToUi(d.getData_solicitacao()),
                     d.getEntregueSouN() });
         }
     }
@@ -267,7 +268,7 @@ public class TelaDemandas extends javax.swing.JFrame {
         String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 2));
         if (descricao == null)
             return;
-        String data = JOptionPane.showInputDialog(this, "Data Solicitação:", tableModel.getValueAt(row, 3));
+        String data = JOptionPane.showInputDialog(this, "Data Solicitação (DD/MM/AAAA):", tableModel.getValueAt(row, 3));
         String entregue = (String) JOptionPane.showInputDialog(this, "Entregue:", "Editar",
                 JOptionPane.QUESTION_MESSAGE, null, new String[] { "S", "N" }, tableModel.getValueAt(row, 4));
         if (entregue == null)
@@ -277,7 +278,7 @@ public class TelaDemandas extends javax.swing.JFrame {
         d.setId(id);
         d.setId_cliente(Integer.parseInt(idCliente));
         d.setDescricao(descricao);
-        d.setData_solicitacao(data != null ? data : "");
+        d.setData_solicitacao(data != null ? DateUtils.uiToDb(data) : "");
         d.setEntregueSouN(entregue);
 
         dao_demandas dao = new dao_demandas();

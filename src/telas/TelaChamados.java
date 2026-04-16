@@ -2,6 +2,7 @@ package telas;
 
 import dao_tabela_atributos.dao_chamados;
 import tabelaatributos.Chamados;
+import utils.DateUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -73,7 +74,7 @@ public class TelaChamados extends javax.swing.JFrame {
 
         JLabel lIdCli = new JLabel("ID Cliente:");
         JLabel lDesc = new JLabel("Descrição:");
-        JLabel lData = new JLabel("Data Abertura (AAAA-MM-DD):");
+        JLabel lData = new JLabel("Data Abertura (DD/MM/AAAA):");
 
         jTextIdCliente = new JTextField();
         jTextDescricao = new JTextField();
@@ -179,7 +180,7 @@ public class TelaChamados extends javax.swing.JFrame {
             Chamados ch = new Chamados();
             ch.setId_cliente(idCli);
             ch.setDescricao(desc);
-            ch.setData_abertura(data);
+            ch.setData_abertura(DateUtils.uiToDb(data));
             ch.setStatus("ABERTO");
 
             dao_chamados dao = new dao_chamados();
@@ -202,7 +203,7 @@ public class TelaChamados extends javax.swing.JFrame {
         List<Chamados> lista = dao.listarTodos();
         for (Chamados ch : lista) {
             tableModel.addRow(new Object[] { ch.getId_chamado(), ch.getId_cliente(), ch.getDescricao(),
-                    ch.getData_abertura(), ch.getStatus() });
+                    DateUtils.dbToUi(ch.getData_abertura()), ch.getStatus() });
         }
     }
 
@@ -220,7 +221,7 @@ public class TelaChamados extends javax.swing.JFrame {
         String descricao = JOptionPane.showInputDialog(this, "Descrição:", tableModel.getValueAt(row, 2));
         if (descricao == null)
             return;
-        String data = JOptionPane.showInputDialog(this, "Data Abertura:", tableModel.getValueAt(row, 3));
+        String data = JOptionPane.showInputDialog(this, "Data Abertura (DD/MM/AAAA):", tableModel.getValueAt(row, 3));
         String status = (String) JOptionPane.showInputDialog(this, "Status:", "Editar Status",
                 JOptionPane.QUESTION_MESSAGE, null, new String[] { "ABERTO", "EM ANDAMENTO", "FECHADO" },
                 tableModel.getValueAt(row, 4));
@@ -231,7 +232,7 @@ public class TelaChamados extends javax.swing.JFrame {
         ch.setId_chamado(id);
         ch.setId_cliente(Integer.parseInt(idCliente));
         ch.setDescricao(descricao);
-        ch.setData_abertura(data != null ? data : "");
+        ch.setData_abertura(data != null ? DateUtils.uiToDb(data) : "");
         ch.setStatus(status);
 
         dao_chamados dao = new dao_chamados();
