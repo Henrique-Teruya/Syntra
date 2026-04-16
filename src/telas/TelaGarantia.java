@@ -2,6 +2,7 @@ package telas;
 
 import dao_tabela_atributos.dao_garantia;
 import tabelaatributos.Garantia;
+import utils.DateUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -74,7 +75,7 @@ public class TelaGarantia extends javax.swing.JFrame {
         JLabel lCli = new JLabel("ID Cliente:");
         JLabel lMat = new JLabel("ID Material:");
         JLabel lMeses = new JLabel("Meses de Garantia:");
-        JLabel lData = new JLabel("Data Compra (AAAA-MM-DD):");
+        JLabel lData = new JLabel("Data Compra (DD/MM/AAAA):");
 
         jTextCliente = new JTextField();
         jTextMaterial = new JTextField();
@@ -174,7 +175,7 @@ public class TelaGarantia extends javax.swing.JFrame {
             g.setId_cliente(Integer.parseInt(jTextCliente.getText()));
             g.setId_material(Integer.parseInt(jTextMaterial.getText()));
             g.setMeses_garantia(Integer.parseInt(jTextMeses.getText()));
-            g.setData_compra(jTextData.getText());
+            g.setData_compra(DateUtils.uiToDb(jTextData.getText()));
 
             dao_garantia dao = new dao_garantia();
             if (dao.inserirDados(g)) {
@@ -197,7 +198,7 @@ public class TelaGarantia extends javax.swing.JFrame {
         List<Garantia> lista = dao.listarTodos();
         for (Garantia g : lista) {
             tableModel.addRow(new Object[] { g.getId_garantia(), g.getId_cliente(), g.getId_material(),
-                    g.getMeses_garantia(), g.getData_compra() });
+                    g.getMeses_garantia(), DateUtils.dbToUi(g.getData_compra()) });
         }
     }
 
@@ -218,14 +219,14 @@ public class TelaGarantia extends javax.swing.JFrame {
         String meses = JOptionPane.showInputDialog(this, "Meses Garantia:", tableModel.getValueAt(row, 3));
         if (meses == null)
             return;
-        String data = JOptionPane.showInputDialog(this, "Data Compra:", tableModel.getValueAt(row, 4));
+        String data = JOptionPane.showInputDialog(this, "Data Compra (DD/MM/AAAA):", tableModel.getValueAt(row, 4));
 
         Garantia g = new Garantia();
         g.setId_garantia(id);
         g.setId_cliente(Integer.parseInt(idCliente));
         g.setId_material(Integer.parseInt(idMaterial));
         g.setMeses_garantia(Integer.parseInt(meses));
-        g.setData_compra(data != null ? data : "");
+        g.setData_compra(data != null ? DateUtils.uiToDb(data) : "");
 
         dao_garantia dao = new dao_garantia();
         if (dao.atualizar(g)) {

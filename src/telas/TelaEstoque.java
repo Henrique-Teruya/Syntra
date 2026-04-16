@@ -2,6 +2,7 @@ package telas;
 
 import dao_tabela_atributos.dao_estoque;
 import tabelaatributos.Estoque;
+import utils.DateUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -76,7 +77,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         JLabel lIdMat = new JLabel("ID Material:");
         JLabel lDesc = new JLabel("Descrição:");
         JLabel lQtd = new JLabel("Quantidade:");
-        JLabel lData = new JLabel("Data (AAAA-MM-DD):");
+        JLabel lData = new JLabel("Data (DD/MM/AAAA):");
 
         jComboTipo = new JComboBox<>(new String[] { "ENTRADA", "SAIDA" });
         jTextIdMaterial = new JTextField();
@@ -188,7 +189,7 @@ public class TelaEstoque extends javax.swing.JFrame {
             mov.setId_material(idMat);
             mov.setDescricao(desc);
             mov.setQuantidade(qtd);
-            mov.setData_mov(data);
+            mov.setData_mov(DateUtils.uiToDb(data));
 
             dao_estoque dao = new dao_estoque();
             if (dao.inserirDados(mov)) {
@@ -212,7 +213,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         List<Estoque> lista = dao.listarTodos();
         for (Estoque e : lista) {
             tableModel.addRow(new Object[] { e.getId_mov(), e.getId_material(), e.getDescricao(), e.getQuantidade(),
-                    e.getTipo_mov(), e.getData_mov() });
+                    e.getTipo_mov(), DateUtils.dbToUi(e.getData_mov()) });
         }
     }
 
@@ -246,7 +247,7 @@ public class TelaEstoque extends javax.swing.JFrame {
             return;
         int quantidade = Integer.parseInt(quantidadeStr);
 
-        String dataMov = JOptionPane.showInputDialog(this, "Data:", original.getData_mov());
+        String dataMov = JOptionPane.showInputDialog(this, "Data (DD/MM/AAAA):", DateUtils.dbToUi(original.getData_mov()));
         if (dataMov == null)
             return;
 
@@ -256,7 +257,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         e.setTipo_mov(tipoMov);
         e.setDescricao(descricao);
         e.setQuantidade(quantidade);
-        e.setData_mov(dataMov);
+        e.setData_mov(DateUtils.uiToDb(dataMov));
 
         if (dao.atualizar(e)) {
             JOptionPane.showMessageDialog(this, "Atualizado!");
